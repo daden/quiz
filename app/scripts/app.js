@@ -13,8 +13,9 @@
         FB_QUIZ_RESPONSES: config.FB_ROOT + 'quizzestaken'
     })
 
+    // Basic module
     ng.module('quizApp', ['ngCookies','ngResource','ngSanitize','ngRoute','firebase',
-            'quizModule','DataServices'])
+            'quizModule','adminModule','DataServices'])
 
         .config(function ($routeProvider) {
             $routeProvider
@@ -24,7 +25,11 @@
                 })
                 .when('/quiz', {
                     templateUrl: 'views/quiz.html',
-                    controller: 'QuizCtrl'
+                    controller: 'quizCtrl'
+                })
+                .when('/admin', {
+                    templateUrl: 'views/admin.html',
+                    controller: 'adminCtrl'
                 })
                 .otherwise({
                     redirectTo: '/'

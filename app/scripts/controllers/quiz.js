@@ -4,7 +4,7 @@
     // mod.factory('cpCriteriaFormCtrl', cpCriteriaFormCtrl);
     // mod.directive('cpCriteriaForm', cpCriteriaForm);
 
-    mod.controller('QuizCtrl', quizCtrl);
+    mod.controller('quizCtrl', quizCtrl);
 
     quizCtrl.$inject = ['$scope','$firebase','QZ', 'fbDataService'];
     function quizCtrl($scope, $firebase, QZ, fbDataService) {
@@ -14,7 +14,7 @@
             // Automatically syncs everywhere in realtime
             // $scope.quiz = $firebase(quizRef);
 
-            $scope.quiz = fbDataService.quizzes;
+            $scope.quiz = fbDataService.quizzes['FirstQuiz'];
 
             $scope.setQuizName = function() {
                 fbDataService.quizzes.$save('FirstQuiz')

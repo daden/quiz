@@ -7,6 +7,7 @@
     mod.factory('fbUsers', fbUsers);
     mod.factory('fbQuizzes', fbQuizzes);
     mod.factory('fbQuestions', fbQuestions);
+    mod.factory('fbAnswers', fbAnswers);
     mod.factory('fbDataService', fbDataService);
     mod.factory('qzUiDataService', qzUiDataService);
 
@@ -22,6 +23,7 @@
 */
 
     // TODO: Consider automating this to create the items based on configuration.
+
     fbUsers.$inject = ['$firebase','QZ'];
     function fbUsers( $firebase, QZ) {
         var ref = new Firebase(QZ.FB_USERS);
@@ -40,11 +42,17 @@
         return $firebase(ref);
     }
 
+    fbAnswers.$inject = ['$firebase','QZ'];
+    function fbAnswers($firebase, QZ) {
+        var ref = new Firebase(QZ.FB_ANSWERS);
+        return $firebase(ref);
+    }
+
     // TODO: This might be unnecessary since the UI should only be using the qzUiDataService
     // TODO: OR might have this generate the individual keys programmatically instead of having the
     //  individual items above.
-    fbDataService.$inject = ['$rootScope','fbUsers', 'fbQuizzes'];
-    function fbDataService($rootScope, fbUsers,fbQuizzes) {
+    fbDataService.$inject = ['$rootScope','fbUsers', 'fbQuizzes', 'fbQuestions', 'fbAnswers'];
+    function fbDataService($rootScope, fbUsers, fbQuizzes, fbQuestions, fbAnswers ) {
 
         var scope = $rootScope,
             users, quizzes, questions;
@@ -53,7 +61,8 @@
         return {
             users: fbUsers,
             quizzes: fbQuizzes,
-            questions: fbQuestions
+            questions: fbQuestions,
+            answers: fbAnswers
         }
 
     }
