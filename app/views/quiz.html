@@ -2,13 +2,20 @@
     <div class="row clearfix">
         <div class="col-md-12 column">
             <h3>
-                Quiz: {{quiz.FirstQuiz.name}}
+                Quiz: {{answers | json}} {{answers.length}}
             </h3>
-            <div class="text-muted">{{quiz.FirstQuiz.description}}</div>
+            <div>
+                <pre>{{ inDepth }}</pre>
+                <pre>{{ result | json }} </pre>
+            </div>
 
             <div>
-                <input data-ng-model="quiz.FirstQuiz.name" size="65"></input>
-                <button data-ng-click="setQuizName()">Change Me!</button>
+                <input data-ng-model="query" size="50" value="FirstQuiz"></input>
+                <input type="checkbox" data-ng-model="inDepth">
+                <button data-ng-click="getAnswers(query)">Get Answers!</button>
+                <button data-ng-click="getQuestions(query, inDepth)">Get Questions</button>
+                <button data-ng-click="getQuiz(query, inDepth)">Get Quiz</button>
+
             </div>
 
             <!-- QA SECTION -->

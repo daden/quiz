@@ -16,8 +16,9 @@
 
             if( repop.quizzes ) {
                 currRef = $firebase(new Firebase(QZ.FB_QUIZZES));
-                currRef["FirstQuiz"] = {name:"Here is my first quiz",questions:['q1','q2','q3'], description:"this is my first quiz!"};
-                currRef.$save("FirstQuiz");
+                // console.log("premature", currRef.FirstQuiz );
+                // currRef["FirstQuiz"] = {name:"Here is my first quiz!",questions:['q1','q2','q3'], description:"this is my first quiz!"};
+                // currRef.$save("FirstQuiz");
             }
             if( repop.questions ) {
 

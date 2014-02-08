@@ -72,23 +72,45 @@
     qzUiDataService.$inject = ['fbDataService'];
     function qzUiDataService(fbDataService) {
 
-        return {
-
-            getQuestions: function( quiz ) {
-
-                // get the questions for a quiz
-
-
-                // get the answers for each question
-
-                // an object with the questions
-                return {
-
-                }
-
+        // Get a questions' answers
+        function getAnswers( question ) {
+            var ret = [];
+            var ans = fbDataService.questions[ question ] && fbDataService.questions[ question ].answers;
+            if( ans ) {
+                angular.forEach( ans, function(val) {
+                    ret.push( fbDataService.answers[val]);
+                })
             }
+            return ret;
+        }
 
+        // Get a quiz's questions
+        function getQuestions( quiz, inDepth ) {
+            var ret = [];
+            var questions = fbDataService.quizzes[ quiz ] && fbDataService.quizzes[ quiz ].questions;
 
+            // Get the questions objects and optionally nexted answer objects
+            angular.forEach( questions, function(question) {
+                if( inDepth ) {
+                    var answersFull = getAnswers(question);
+                    ret.push( angular.extend(fbDataService.questions[question],{answersFull:answersFull}) );
+                } else {
+                    ret.push( fbDataService.questions[question] );
+                }
+            })
+            return ret;
+        }
+
+        // get a Quiz's data
+        function getQuiz( quiz, inDepth ) {
+            var qz = fbDataService.quizzes[ quiz ];
+            return angular.extend(qz, {questionsFull: getQuestions(quiz, inDepth) });
+        }
+
+        return {
+            getQuiz: getQuiz,
+            getQuestions: getQuestions,
+            getAnswers: getAnswers
         }
 
 

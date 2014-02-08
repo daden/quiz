@@ -15,7 +15,7 @@
 
     // Basic module
     ng.module('quizApp', ['ngCookies','ngResource','ngSanitize','ngRoute','firebase',
-            'quizModule','adminModule','DataServices'])
+            'quizModule','adminModule','DataServices','testingGroundModule'])
 
         .config(function ($routeProvider) {
             $routeProvider
@@ -30,6 +30,10 @@
                 .when('/admin', {
                     templateUrl: 'views/admin.html',
                     controller: 'adminCtrl'
+                })
+                .when('/testingGround', {
+                    templateUrl: 'views/testingGround.html',
+                    controller: 'testingGroundCtrl'
                 })
                 .otherwise({
                     redirectTo: '/'

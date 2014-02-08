@@ -6,11 +6,11 @@
 
     mod.controller('quizCtrl', quizCtrl);
 
-    quizCtrl.$inject = ['$scope','$firebase','QZ', 'fbDataService'];
-    function quizCtrl($scope, $firebase, QZ, fbDataService) {
+    quizCtrl.$inject = ['$scope','$firebase','QZ', 'fbDataService', 'qzUiDataService'];
+    function quizCtrl($scope, $firebase, QZ, fbDataService, qzUiDataService) {
 
             // var quizRef = new Firebase("https://surveyamoeba.firebaseio.com/quizzes");
-            var quizRef = new Firebase(QZ.FB_QUIZZES);
+            // var quizRef = new Firebase(QZ.FB_QUIZZES);
             // Automatically syncs everywhere in realtime
             // $scope.quiz = $firebase(quizRef);
 
@@ -20,7 +20,17 @@
                 fbDataService.quizzes.$save('FirstQuiz')
             }
 
-            console.log("quiz", fbDataService );
+            $scope.getQuiz = function( quiz, inDepth ) {
+                $scope.result = qzUiDataService.getQuiz(quiz, inDepth);
+            }
+            $scope.getQuestions = function( quiz, inDepth ) {
+                $scope.result = qzUiDataService.getQuestions(quiz, inDepth);
+            }
+            $scope.getAnswers = function(question) {
+                $scope.result = qzUiDataService.getAnswers(question);
+            }
+
+            // console.log("quiz", fbDataService );
 
 
     }
