@@ -1,4 +1,3 @@
-// Generated on 2014-02-08 using generator-angular 0.7.1
 'use strict';
 
 // # Globbing
@@ -71,6 +70,15 @@ module.exports = function (grunt) {
           base: [
             '.tmp',
             '<%= yeoman.app %>'
+          ]
+        }
+      },
+      livereloaddist: {
+        options: {
+          open: true,
+          base: [
+            '.tmp',
+            '<%= yeoman.dist %>'
           ]
         }
       },
@@ -284,6 +292,7 @@ module.exports = function (grunt) {
             '*.html',
             'views/{,*/}*.html',
             'bower_components/**/*',
+            'lib/**/*',
             'images/{,*/}*.{webp}',
             'fonts/*'
           ]
@@ -368,6 +377,21 @@ module.exports = function (grunt) {
     ]);
   });
 
+  grunt.registerTask('servedist', function (target) {
+    if (target === 'dist') {
+      return grunt.task.run(['build', 'connect:dist:keepalive']);
+    }
+
+    grunt.task.run([
+      'clean:server',
+      'bower-install',
+      'concurrent:server',
+      'autoprefixer',
+      'connect:livereloaddist',
+      'watch'
+    ]);
+  });
+
   grunt.registerTask('server', function () {
     grunt.log.warn('The `server` task has been deprecated. Use `grunt serve` to start a server.');
     grunt.task.run(['serve']);
@@ -388,18 +412,18 @@ module.exports = function (grunt) {
     'concurrent:dist',
     'autoprefixer',
     'concat',
-    'ngmin',
+    //'ngmin',
     'copy:dist',
     'cdnify',
     'cssmin',
-    'uglify',
+    //'uglify',
     'rev',
     'usemin',
     'htmlmin'
   ]);
 
   grunt.registerTask('default', [
-    'newer:jshint',
+    // 'newer:jshint',
     'test',
     'build'
   ]);

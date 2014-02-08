@@ -1,18 +1,36 @@
-'use strict';
+(function ( ng ) {
+    'use strict';
 
-angular.module('quiz2App', [
-  'ngCookies',
-  'ngResource',
-  'ngSanitize',
-  'ngRoute'
-])
-  .config(function ($routeProvider) {
-    $routeProvider
-      .when('/', {
-        templateUrl: 'views/main.html',
-        controller: 'MainCtrl'
-      })
-      .otherwise({
-        redirectTo: '/'
-      });
-  });
+    // if needed could move into a configurable service
+    var config = {
+        FB_ROOT: "https://surveyamoeba.firebaseio.com/"
+    }
+    config = ng.extend(config, {
+        FB_QUIZZES: config.FB_ROOT + 'quizzes',
+        FB_USERS: config.FB_ROOT + 'users',
+        FB_QUESTIONS: config.FB_ROOT + 'questions',
+        FB_ANSWERS: config.FB_ROOT + 'answers',
+        FB_QUIZ_RESPONSES: config.FB_ROOT + 'quizzestaken'
+    })
+
+    ng.module('quizApp', ['ngCookies','ngResource','ngSanitize','ngRoute','firebase',
+            'quizModule','DataServices'])
+
+        .config(function ($routeProvider) {
+            $routeProvider
+                .when('/', {
+                    templateUrl: 'views/main.html',
+                    controller: 'MainCtrl'
+                })
+                .when('/quiz', {
+                    templateUrl: 'views/quiz.html',
+                    controller: 'QuizCtrl'
+                })
+                .otherwise({
+                    redirectTo: '/'
+                });
+        })
+        .constant('QZ', config);
+
+
+}(angular));
