@@ -10,7 +10,7 @@
         FB_USERS: config.FB_ROOT + 'users',
         FB_QUESTIONS: config.FB_ROOT + 'questions',
         FB_ANSWERS: config.FB_ROOT + 'answers',
-        FB_QUIZ_RESPONSES: config.FB_ROOT + 'quizzestaken'
+        FB_QUIZZES_TAKEN: config.FB_ROOT + 'quizzestaken'
     })
 
     // Basic module

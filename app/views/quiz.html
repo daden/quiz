@@ -1,10 +1,10 @@
-<div class="container-fluid">
+<div class="container">
     <div class="row clearfix">
         <div class="col-md-12 column">
             <h3>
-                Quiz: {{answers | json}} {{answers.length}}
+                Quiz: {{quiz.name}}
             </h3>
-            <div>
+            <!--<div>
                 <pre>{{ inDepth }}</pre>
                 <pre>{{ result | json }} </pre>
             </div>
@@ -16,7 +16,10 @@
                 <button data-ng-click="getQuestions(query, inDepth)">Get Questions</button>
                 <button data-ng-click="getQuiz(query, inDepth)">Get Quiz</button>
 
-            </div>
+            </div>-->
+            <!-- Debugging-->
+            <div><pre>{{takenQuiz | json }}</pre></div>
+            <!--<div><pre>{{quiz.questionsFull | json }}</pre></div>-->
 
             <!-- QA SECTION -->
             <div class="row well">
@@ -25,69 +28,27 @@
                     <div class="col-md-1 column">
                     </div>
                     <div class="col-md-11 column">
+                        <!-- TODO: Make a directive for questions -->
                         <ol>
-                            <li>
-                                What is the speed of light?
+                            <li data-ng-repeat="question in quiz.questionsFull" ng-init="takenQuiz.answers[question.id]={}">
+                                {{question.body}}
+
+                                <div class="row clearfix" >
+                                    <div class="col-md-1 column">
+                                    </div>
+                                    <div class="col-md-11 column">
+                                        <ul class="list-unstyled row">
+                                            <li data-ng-repeat="answer in question.answersFull"
+                                                qz-answer="takenQuiz.answers"
+                                                qz-answer-data="{answer:answer, question:question}"
+                                                >
+                                            <li>
+                                        </ul>
+                                    </div>
+                                </div>
                             </li>
                         </ol>
                     </div>
-
-                    <!-- Answers-->
-                    <div class="row clearfix">
-                        <div class="col-md-2 column">
-                        </div>
-                        <div class="col-md-10 column">
-                            <ul class="list-unstyled">
-                                <!-- TODO: Put into a directive that displays various kinds of answers -->
-                                <li>
-                                    <div class="checkbox">
-                                        <label>
-                                            <input type="checkbox">186,282 mph
-                                        </label>
-                                    </div>
-                                <li>
-                                <li>
-                                    <div class="checkbox">
-                                        <label>
-                                            <input type="checkbox">364.25 smoots
-                                        </label>
-                                    </div>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                    <!-- End Answers-->
-                </div>
-                <!-- End questions -->
-
-                <!-- Questions-->
-                <div class="row clearfix">
-                    <div class="col-md-1 column">
-                    </div>
-                    <div class="col-md-11 column">
-                        <ol>
-                            <li>
-                                How do you feel?
-                            </li>
-                        </ol>
-                    </div>
-
-                    <!-- Answers-->
-                    <div class="row clearfix">
-                        <div class="col-md-2 column">
-                        </div>
-                        <div class="col-md-10 column">
-                            <!-- TODO: This will be in the directive for dynamic answers -->
-                            <ul class="list-unstyled">
-                                <li>
-                                    <div class="text">
-                                        <textarea type="textbo" cols="60" rows="4"></textarea>
-                                    </div>
-                                <li>
-                            </ul>
-                        </div>
-                    </div>
-                    <!-- End Answers-->
                 </div>
                 <!-- End questions -->
             </div>
@@ -98,7 +59,7 @@
                 </div>
                 <div class="col-md-4 column">
                     <div class="btn-group">
-                        <button class="btn btn-default" type="button"><em class="glyphicon glyphicon-save"></em>
+                        <button class="btn btn-default" type="button" ng-click="saveQuiz(takenQuiz,quiz.questionsFull)"><em class="glyphicon glyphicon-save"></em>
                             Submit
                         </button>
                         <button class="btn btn-default" type="button"><em class="glyphicon glyphicon-backward"></em>
