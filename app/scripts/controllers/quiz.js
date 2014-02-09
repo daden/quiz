@@ -39,16 +39,23 @@
         }
     }
 
-    quizCtrl.$inject = ['$scope','$firebase', '$timeout', 'QZ', 'fbDataService', 'qzUiDataService'];
-    function quizCtrl($scope, $firebase, $timeout, QZ, fbDataService, qzUiDataService) {
+    quizCtrl.$inject = ['$rootScope', '$scope','$firebase', '$timeout', 'QZ', 'fbDataService', 'qzUiDataService'];
+    function quizCtrl($rootScope, $scope, $firebase, $timeout, QZ, fbDataService, qzUiDataService) {
 
             var quiz;
 
-            // TODO: Try using promises to determine when all of the data is updated rather than this
-            //  hinky $timeout.
-            $timeout( function() {
-                $scope.quiz = qzUiDataService.getQuiz('FirstQuiz', true);
-            },1000);
+            var checkIt = function() {
+                var ret = $timeout( function() {
+                    if( ! $rootScope.loading ) {
+                        $scope.quiz = qzUiDataService.getQuiz('FirstQuiz', true);
+                    } else {
+                        checkIt()
+                    }
+                },100)
+                return ret;
+            };
+
+            checkIt();
 
             // TODO: When security is added, update to pass in the logged in user.
             // TODO: When the selection is added for which quiz to take, update to pass in selected quiz.
@@ -57,6 +64,11 @@
 
             $scope.saveQuiz = function( takenQuiz, questionsFull ) {
                 qzUiDataService.saveTakenQuiz( takenQuiz, questionsFull );
+
+                // Repopulate the form after a little delay to avoid double submissions.
+                $timeout( function() {
+                    $scope.takenQuiz = qzUiDataService.createTakenQuiz( 'daden', 'FirstQuiz' );
+                },100)
             }
 
             // ****** Temp methods

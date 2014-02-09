@@ -1,76 +1,50 @@
 (function (ng, mod) {
     'use strict';
 
-    // mod.factory('cpCriteriaFormCtrl', cpCriteriaFormCtrl);
-    // mod.directive('cpCriteriaForm', cpCriteriaForm);
-
-    mod.factory('fbUsers', fbUsers);
-    mod.factory('fbQuizzes', fbQuizzes);
-    mod.factory('fbQuestions', fbQuestions);
-    mod.factory('fbAnswers', fbAnswers);
-    mod.factory('fbQuizzesTaken', fbQuizzesTaken);
     mod.factory('fbDataService', fbDataService);
     mod.factory('qzUiDataService', qzUiDataService);
 
-/*
-    .factory("sampleService", ["$firebase", function($firebase) {
-        var ref = new Firebase("https://<my-firebase>.firebaseio.com/text");
-        return $firebase(ref);
-    }])
-        .controller("SampleController", ["$scope", "sampleService",
-            function($scope, service) {
-                service.$bind($scope, "text");
-            }
-*/
-
-    // TODO: Consider automating this to create the items based on configuration.
-
-    fbUsers.$inject = ['$firebase','QZ'];
-    function fbUsers( $firebase, QZ) {
-        var ref = new Firebase(QZ.FB_USERS);
-        return $firebase(ref);
-    }
-
-    fbQuizzes.$inject = ['$firebase','QZ'];
-    function fbQuizzes($firebase, QZ) {
-        var ref = new Firebase(QZ.FB_QUIZZES);
-        return $firebase(ref);
-    }
-
-    fbQuestions.$inject = ['$firebase','QZ'];
-    function fbQuestions($firebase, QZ) {
-        var ref = new Firebase(QZ.FB_QUESTIONS);
-        return $firebase(ref);
-    }
-
-    fbAnswers.$inject = ['$firebase','QZ'];
-    function fbAnswers($firebase, QZ) {
-        var ref = new Firebase(QZ.FB_ANSWERS);
-        return $firebase(ref);
-    }
-
-    fbQuizzesTaken.$inject = ['$firebase','QZ'];
-    function fbQuizzesTaken($firebase, QZ) {
-        var ref = new Firebase(QZ.FB_QUIZZES_TAKEN);
-        return $firebase(ref);
-    }
-
-    // TODO: This might be unnecessary since the UI should only be using the qzUiDataService
-    // TODO: OR might have this generate the individual keys programmatically instead of having the
     //  Bring together all the FB references into one spot.
-    fbDataService.$inject = ['$rootScope','fbUsers', 'fbQuizzes', 'fbQuestions', 'fbAnswers', 'fbQuizzesTaken'];
-    function fbDataService($rootScope, fbUsers, fbQuizzes, fbQuestions, fbAnswers, fbQuizzesTaken ) {
+    fbDataService.$inject = ['$rootScope', '$q', '$timeout', '$firebase', 'QZ'];
+    function fbDataService($rootScope, $q, $timeout, $firebase, QZ ) {
 
-        /*var scope = $rootScope,
-            users, quizzes, questions;*/
+        var users = {}, quizzes = {}, questions = {}, answers = {}, quizzesTaken = {};
+
+        $rootScope.loading = true;
+        $rootScope.showLoading();
+
+        // Wrap a $firebase reference in a promise
+        function mkFbRef( type ) {
+            var deferred = $q.defer();
+            var ref = $firebase( new Firebase(QZ[type]) );
+            ref.$on("loaded", function() {
+                deferred.resolve(ref);
+            })
+            return deferred.promise;
+        }
+
+        // Wait until they've all finished
+        $q.all( [mkFbRef('FB_USERS'), mkFbRef('FB_QUIZZES'), mkFbRef('FB_QUESTIONS'), mkFbRef('FB_ANSWERS'), mkFbRef('FB_QUIZZES_TAKEN')] )
+            .then( function( values ) {
+
+                ng.extend( users, values[0] );
+                ng.extend( quizzes, values[1] );
+                ng.extend( questions, values[2] );
+                ng.extend( answers, values[3] );
+                ng.extend( quizzesTaken, values[4] );
+
+                // turn off the loading image
+                $rootScope.loading = false;
+                $rootScope.hideLoading();
+            })
 
         // public props
         return {
-            users: fbUsers,
-            quizzes: fbQuizzes,
-            questions: fbQuestions,
-            answers: fbAnswers,
-            quizzesTaken: fbQuizzesTaken
+            users: users,
+            quizzes: quizzes,
+            questions: questions,
+            answers: answers,
+            quizzesTaken: quizzesTaken
         }
 
     }
@@ -78,19 +52,17 @@
     qzUiDataService.$inject = ['fbDataService'];
     function qzUiDataService(fbDataService) {
 
-        // Get a questions' answers
-        function getAnswers( question ) {
-            var ret = [];
-            var ans = fbDataService.questions[ question ] && fbDataService.questions[ question ].answers;
-            if( ans ) {
-                angular.forEach( ans, function(val) {
-                    ret.push( angular.extend(fbDataService.answers[val],{id:val}));
-                })
-            }
-            return ret;
+
+        // Quiz's data
+        function getQuiz( quiz, inDepth ) {
+            // console.log("fbDataService", fbDataService );
+
+            var qz = fbDataService.quizzes[ quiz ];
+            var questionsFull = getQuestions(quiz, inDepth);
+            return angular.extend(qz, {id: quiz, questionsFull: questionsFull });
         }
 
-        // Get a quiz's questions
+        // Questions
         function getQuestions( quiz, inDepth ) {
             var ret = [];
             var questions = fbDataService.quizzes[ quiz ] && fbDataService.quizzes[ quiz ].questions;
@@ -107,12 +79,19 @@
             return ret;
         }
 
-        // get a Quiz's data
-        function getQuiz( quiz, inDepth ) {
-            var qz = fbDataService.quizzes[ quiz ];
-            return angular.extend(qz, {id: quiz, questionsFull: getQuestions(quiz, inDepth) });
+        // Answers
+        function getAnswers( question ) {
+            var ret = [];
+            var ans = fbDataService.questions[ question ] && fbDataService.questions[ question ].answers;
+            if( ans ) {
+                angular.forEach( ans, function(val) {
+                    ret.push( angular.extend(fbDataService.answers[val],{id:val}));
+                })
+            }
+            return ret;
         }
 
+        // Empty object for handling quiz answers
         function createTakenQuiz( user, quiz ) {
             return {
                 user: user,
@@ -131,12 +110,12 @@
             // Let's grade it now
             gradeQuiz(takenQuiz, questionsFull );
 
-            console.log("in saveTakenQuiz", takenQuiz );
-
+            if( takenQuiz.result.total && takenQuiz.result.total > 0 ) {
+                takenQuiz.result.percent = takenQuiz.result.rights/takenQuiz.result.total;
+            }
 
             // Add the data to FB
-            // var id = fbDataService.quizzesTaken.$add(takenQuiz);
-            // console.log("newtakenid", id );
+            var id = fbDataService.quizzesTaken.$add(takenQuiz);
         }
 
         // Compare the answers given to the correct answers taking into account the type of question (text or
@@ -144,23 +123,21 @@
         // For now we'll assume the display type will tell us whether it is single or multiple choice, probably
         //  should specify that separately if this was going to be used.
         function gradeQuiz( takenQuiz, questionsFull ) {
-            // ng.forEach(questionsFull, function(question) {
             for( var k=0; k < questionsFull.length; k++ ) {
                 var question = questionsFull[k];
 
                 if( ! ng.isDefined(takenQuiz.answers[question.id]) ) {
-                    grade(takenQuiz, false);
+                    grade(takenQuiz, false, question.id);
                     continue;
                 }
 
                 var type = question.type;
                 switch( type ) {
-
                     case 'radio':
                         if( takenQuiz.answers[question.id] !== question.correctAnswer ) {
-                            grade(takenQuiz, false);
+                            grade(takenQuiz, false, question.id);
                         } else {
-                            grade(takenQuiz, true);
+                            grade(takenQuiz, true, question.id);
                         }
                         break;
                     case 'checkbox':
@@ -178,30 +155,36 @@
                         var keys = _.keys( takenQuiz.answers[question.id] );
                         if(_.difference(question.correctAnswer, keys ).length == 0
                             && _.difference(keys, question.correctAnswer).length == 0) {
-                            grade(takenQuiz,true);
+                            grade(takenQuiz,true, question.id);
                         } else {
-                            grade(takenQuiz,false);
+                            grade(takenQuiz,false, question.id);
                         }
                         break;
 
                     case 'text':
                     case 'textarea':
-                        // TODO
-
+                        // For now, just check if the text response contains the string that is the correct answer.
+                        //  Would need to be a much more involved check.
+                        if( ! ~takenQuiz.answers[question.id].search(question.correctAnswer) ) {
+                            grade(takenQuiz,false, question.id);
+                        } else {
+                            grade(takenQuiz,true, question.id);
+                        }
                         break;
                 }
             }
 
-            function grade( takenQuiz, correct ) {
+            function grade( takenQuiz, correct, questionId ) {
+                takenQuiz.answersRight = takenQuiz.answersRight || {};
                 takenQuiz.result.total++
                 if( correct ) {
                     takenQuiz.result.rights++;
+                    takenQuiz.answersRight[questionId] = true;
                 } else {
                     takenQuiz.result.wrongs++;
+                    takenQuiz.answersRight[questionId] = false;
                 }
             }
-            // return takenQuiz;
-
         }
 
         return {
@@ -211,38 +194,6 @@
             createTakenQuiz: createTakenQuiz,
             saveTakenQuiz: saveTakenQuiz
         }
-
-
     }
-
-
-    /*fbDataService.$inject = ['$rootScope','fbUsers', 'fbQuizzes'];
-    function fbDataService($rootScope, fbUsers,fbQuizzes) {
-
-        var scope = $rootScope,
-            users, quizzes;
-
-        fbUsers.$bind(scope, 'users');
-        fbQuizzes.$bind(scope, 'quizzes')
-            .then(function(data) {
-                console.log("resolved promise", arguments );
-                quizzes = data;
-            });
-
-        // public props
-        return {
-            users: scope,
-            quizzes: quizzes
-
-        }
-
-    }*/
-
-    /*function qzUsers() {
-        .controller("SampleController", ["$scope", "sampleService",
-            function($scope, service) {
-                service.$bind($scope, "text");
-            }
-    }*/
 
 }(angular, angular.module('DataServices',[])));

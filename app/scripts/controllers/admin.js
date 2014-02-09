@@ -8,11 +8,15 @@
 
             var currRef, child,
                 repop = {
-                    quizzes: true,
+                    quizzes: false,
                     questions: false,
                     answers: false,
-                    users: false
-                };
+                    users: false,
+                    quizzesTaken: false
+                },
+                deleteStuff = {
+                    quizzesTaken: false
+                }
 
             if( repop.quizzes ) {
                 currRef = $firebase(new Firebase(QZ.FB_QUIZZES));
@@ -37,6 +41,16 @@
                 // currRef.$child('q1').$save('answers');
             }
 
+            if( repop.quizzestaken ) {
+                currRef = $firebase( new Firebase(QZ.FB_ROOT));
+                // TODO: Add code to populate
+            }
+
+            // DELETING THING
+            if( deleteStuff.quizzesTaken )  {
+                currRef = $firebase(new Firebase(QZ.FB_QUIZZES_TAKEN) );
+                child = currRef.$remove();
+            }
 
 
             /*var child = quizRef.$child("FirstQuiz");

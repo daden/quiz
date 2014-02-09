@@ -15,13 +15,17 @@
 
     // Basic module
     ng.module('quizApp', ['ngCookies','ngResource','ngSanitize','ngRoute','firebase',
-            'quizModule','adminModule','DataServices','testingGroundModule'])
+            'SecModule','quizModule','adminModule','DataServices','testingGroundModule'])
 
         .config(function ($routeProvider) {
             $routeProvider
                 .when('/', {
                     templateUrl: 'views/main.html',
                     controller: 'MainCtrl'
+                })
+                .when('/login', {
+                    templateUrl: 'views/sec.html',
+                    controller: 'SecCtrl'
                 })
                 .when('/quiz', {
                     templateUrl: 'views/quiz.html',
