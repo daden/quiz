@@ -167,17 +167,17 @@
                         var correct = true;
                         question.correctAnswer = ng.isArray(question.correctAnswer) ? question.correctAnswer : [question.correctAnswer];
 
-                        
-
-                        for( var i=0; i < question.correctAnswer.length; i++ ) {
-                            var currAnswer = question.correctAnswer[i]
-                            if( ! ng.isDefined(takenQuiz.answers[question.id][currAnswer])
-                                || ! takenQuiz.answers[question.id][currAnswer] ) {
-                                correct = false;
-                                break;
+                        // remove all items set to false
+                        for( var p in takenQuiz.answers[question.id] ) {
+                            if( ! takenQuiz.answers[question.id][p] ) {
+                                delete( takenQuiz.answers[question.id][p] );
                             }
                         }
-                        if( correct ) {
+
+                        // difference the arrays both ways -- there shouldn't be any differences
+                        var keys = _.keys( takenQuiz.answers[question.id] );
+                        if(_.difference(question.correctAnswer, keys ).length == 0
+                            && _.difference(keys, question.correctAnswer).length == 0) {
                             grade(takenQuiz,true);
                         } else {
                             grade(takenQuiz,false);
