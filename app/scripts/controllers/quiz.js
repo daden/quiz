@@ -12,7 +12,7 @@
     qzHeader.$inject = ['$location'];
     function qzHeader($location) {
         return {
-            template: "<!--<div class=\"col-md-6 col-md-offset-3 text-center\" ng-hide=\"loginObj.user == null\">-->\n<div class=\"col-md-6 col-md-offset-3 text-center\">\n    Welcome {{loginObj.user.email }}!!\n    &nbsp;&nbsp;\n    <a href=\"\" ng-click=\"logout(\'logout\')\">Logout</a>\n    &nbsp;&nbsp;\n    <a href=\"\" ng-click=\"login()\">Login Screen</a>\n\n</div>",
+            template: "<!--<div class=\"col-md-6 col-md-offset-3 text-center\" ng-hide=\"loginObj.user == null\">-->\n<div class=\"col-md-8 col-md-offset-2 text-center\">\n    Welcome {{loginObj.user.email }}!!\n    &nbsp;&nbsp;\n    <a href=\"\" ng-click=\"logout(\'logout\')\">Logout</a>\n    &nbsp;&nbsp;\n    <a href=\"\" ng-click=\"login()\">Home</a>\n\n</div>",
             link: function(scope,element,attrs) {
                 scope.login = function() {
                     $location.path('/login');

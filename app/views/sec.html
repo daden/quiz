@@ -1,6 +1,6 @@
 <div class="container">
     <div class="row">
-        <div class="col-md-6 col-md-offset-3 text-center">
+        <div class="col-md-8 col-md-offset-2 text-center">
             <span ng-show="loginObj.user == null">
                 <a href="" ng-click="chooseForm('registration')">Registration</a>
                 &nbsp;&nbsp;
@@ -18,7 +18,7 @@
 
         </div>
     </div>
-    <div class="row voffset2">
+    <div class="row voffset8">
         <div class="col-md-6 col-md-offset-3">
             <div class="panel panel-default">
                 <div class="panel-heading">
@@ -51,6 +51,8 @@
             <span class="alert-danger" ng-repeat="alert in alerts" type="alert.type" close="closeAlert($index)">{{alert.msg}}</span>
         </div>
     </div>
-    <div class="voffset2"><pre>{{currUser | json}}</pre></div>
-    <div class="voffset2"><pre>{{loginObj | json}}</pre></div>
+
+    <!-- DEBUGGING -->
+    <!--<div class="voffset2"><pre>{{currUser | json}}</pre></div>
+    <div class="voffset2"><pre>{{loginObj | json}}</pre></div>-->
 </div>
