@@ -43,7 +43,30 @@
                     redirectTo: '/'
                 });
         })
-        .constant('QZ', config);
+        .constant('QZ', config)
+
+        .run( function($rootScope, $location, QZ, $firebaseSimpleLogin) {
+
+            if( ! ng.isDefined($rootScope.loginObj) ) {
+                var dataRef = new Firebase(QZ.FB_ROOT);
+                $rootScope.loginObj = $firebaseSimpleLogin(dataRef);
+            }
+
+            // register listener to watch route changes
+            $rootScope.$on( "$routeChangeStart", function(event, next, current) {
+                console.log("in a routechange", $rootScope.loginObj );
+
+                if ( ! ng.isDefined($rootScope.loginObj) || $rootScope.loginObj.user == null ) {
+                    // no logged user, we should be going to #login
+                    if ( next.templateUrl == "views/sec.html" ) {
+                        // already going to #login, no redirect needed
+                    } else {
+                        // not going to #login, we should redirect now
+                        $location.path( "/login" );
+                    }
+                }
+            });
+        })
 
 
 }(angular));

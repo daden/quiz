@@ -10,6 +10,8 @@
                 Welcome {{loginObj.user.email }}!!
                 &nbsp;&nbsp;
                 <a href="" ng-click="logout('logout')">Logout</a>
+                &nbsp;&nbsp;
+                <a href="" ng-click="startQuiz()">Quiz</a>
             </span>
 
         </div>
@@ -47,5 +49,6 @@
             <span class="alert-danger" ng-repeat="alert in alerts" type="alert.type" close="closeAlert($index)">{{alert.msg}}</span>
         </div>
     </div>
-    <div class="voffset4"><pre>{{loginObj}}</pre></div>
+    <div class="voffset2"><pre>{{currUser | json}}</pre></div>
+    <div class="voffset2"><pre>{{loginObj | json}}</pre></div>
 </div>

@@ -18,6 +18,18 @@
                     quizzesTaken: false
                 }
 
+            if( repop.users ) {
+                currRef = $firebase(new Firebase(QZ.FB_USERS));
+                child = currRef.$child('daden');
+                child.email = 'dadeng@gmail.com';
+                child.username = 'daden';
+                child.name = 'David Aden';
+                child.quizzes = ['-JFNh84Dx5bYngGUxk96'];
+
+                child.priority = "dadeng@gmail.com";
+                child.$save();
+            }
+
             if( repop.quizzes ) {
                 currRef = $firebase(new Firebase(QZ.FB_QUIZZES));
                 // console.log("premature", currRef.FirstQuiz );
