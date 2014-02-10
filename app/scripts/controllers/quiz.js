@@ -60,7 +60,7 @@
             // TODO: When security is added, update to pass in the logged in user.
             // TODO: When the selection is added for which quiz to take, update to pass in selected quiz.
             // create an empty record for the quiz we're about to take.
-            $scope.takenQuiz = qzUiDataService.createTakenQuiz( 'daden', 'FirstQuiz' );
+            $scope.takenQuiz = qzUiDataService.createTakenQuiz( $rootScope.currUser, 'FirstQuiz' );
 
             $scope.saveQuiz = function( takenQuiz, questionsFull ) {
                 qzUiDataService.saveTakenQuiz( takenQuiz, questionsFull );

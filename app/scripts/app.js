@@ -31,6 +31,10 @@
                     templateUrl: 'views/quiz.html',
                     controller: 'quizCtrl'
                 })
+                .when('/quizResults', {
+                    templateUrl: 'views/quizResults.html',
+                    controller: 'quizResultsCtrl'
+                })
                 .when('/admin', {
                     templateUrl: 'views/admin.html',
                     controller: 'adminCtrl'
@@ -45,7 +49,24 @@
         })
         .constant('QZ', config)
 
-        .run( function($rootScope, $location, QZ, $firebaseSimpleLogin) {
+        .run( function($rootScope, $location, $timeout, QZ, $firebaseSimpleLogin) {
+
+            $rootScope.$watch('loginObj.user', function( newVal, oldVal ) {
+                console.log("in the watch", newVal, oldVal, angular.equals(newVal, oldVal) );
+                if( angular.isObject(newVal) && ! $rootScope.currUser ) {
+                    var ref = new Firebase(QZ.FB_USERS);
+                    ref.startAt($rootScope.loginObj.user.email)
+                        .endAt($rootScope.loginObj.user.email)
+                        .on('value', function(snap) {
+                            var user = _.keys(snap.val())[0],
+                                email = snap.val()[user].email;
+
+                            $rootScope.currUser = { user: user, email:email } ;
+                            console.log("currUser in the running", $rootScope.currUser, snap.val(), snap );
+                        })
+                }
+
+            })
 
             if( ! ng.isDefined($rootScope.loginObj) ) {
                 var dataRef = new Firebase(QZ.FB_ROOT);
@@ -54,8 +75,6 @@
 
             // register listener to watch route changes
             $rootScope.$on( "$routeChangeStart", function(event, next, current) {
-                console.log("in a routechange", $rootScope.loginObj );
-
                 if ( ! ng.isDefined($rootScope.loginObj) || $rootScope.loginObj.user == null ) {
                     // no logged user, we should be going to #login
                     if ( next.templateUrl == "views/sec.html" ) {
@@ -66,6 +85,7 @@
                     }
                 }
             });
+
         })
 
 

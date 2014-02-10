@@ -49,8 +49,8 @@
 
     }
 
-    qzUiDataService.$inject = ['fbDataService'];
-    function qzUiDataService(fbDataService) {
+    qzUiDataService.$inject = ['fbDataService','$rootScope','QZ'];
+    function qzUiDataService(fbDataService,$rootScope,QZ) {
 
 
         // Quiz's data
@@ -114,8 +114,22 @@
                 takenQuiz.result.percent = takenQuiz.result.rights/takenQuiz.result.total;
             }
 
-            // Add the data to FB
-            var id = fbDataService.quizzesTaken.$add(takenQuiz);
+            takenQuiz.createDt = (new Date()).toString();
+            console.log("takenQuiz", takenQuiz );
+            // Originally did this with $firebase but it is a total PITA on some things
+            // Add the quiz results to FB
+            // var id = fbDataService.quizzesTaken.$add(takenQuiz);
+
+            var ref = new Firebase(QZ.FB_QUIZZES_TAKEN);
+            var qt = ref.push(takenQuiz);
+            qt.setPriority( $rootScope.currUser.email );
+            qt.on('value', function( snap ) {
+                $rootScope.lastQuiz = snap.val();
+                console.log("snap", snap.val() );
+                // $rootScope.currUser = { email: snap.val(), key: snap.name() };
+                // $location.path( "/quiz" );
+            });
+            
         }
 
         // Compare the answers given to the correct answers taking into account the type of question (text or

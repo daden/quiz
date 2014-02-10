@@ -54,9 +54,8 @@
                         // push the new user to FB and set priority
                         var user = ref.push(newUser);
                         user.setPriority( data.email );
-                        // Get the user back and set for use
                         user.on('value', function( snap ) {
-                            $rootScope.currUser = snap.val();
+                            $rootScope.currUser = { email: snap.val().email, key: snap.name() };
                             $location.path( "/quiz" );
                         });
 
@@ -86,9 +85,20 @@
                 }).then(
                     // succeeded
                     function (user) {
-                        console.log('Logged in as: ', user.uid);
+                        // console.log('Logged in as: ', user.email, user);
 
-                        // TODO: need to get the user and set it somewhere so we can tie the quizzes to the user.
+                        // need to get the user and set it into the $rootScope
+                        var ref = new Firebase(QZ.FB_USERS);
+                        ref.startAt(user.email)
+                            .endAt(user.email)
+                            .on('value', function(snap) {
+                                var user = _.keys(snap.val())[0],
+                                    email = snap.val()[user].email;
+
+                                $rootScope.currUser = { user: user, email:email } ;
+                                console.log("startat", $rootScope.currUser, snap.val(), snap );
+                            })
+
                         $location.path( "/quiz" );
                     },
                     // error
@@ -106,6 +116,7 @@
             $location.path("/quiz");
         }
         $scope.logout = function() {
+            $rootScope.currUser = {};
             $rootScope.loginObj.$logout()
         }
 

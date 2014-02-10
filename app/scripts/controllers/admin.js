@@ -20,14 +20,15 @@
 
             if( repop.users ) {
                 currRef = $firebase(new Firebase(QZ.FB_USERS));
-                child = currRef.$child('daden');
+                currRef.$remove();
+                /*child = currRef.$child('daden');
                 child.email = 'dadeng@gmail.com';
                 child.username = 'daden';
                 child.name = 'David Aden';
                 child.quizzes = ['-JFNh84Dx5bYngGUxk96'];
 
                 child.priority = "dadeng@gmail.com";
-                child.$save();
+                child.$save();*/
             }
 
             if( repop.quizzes ) {

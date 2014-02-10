@@ -1,0 +1,60 @@
+<div class="container" ng-hide="loading">
+    <div class="row clearfix">
+        <div class="col-md-12 column">
+            <h3>
+                Quiz RESULTS
+            </h3>
+
+            <div>What's int rootScope<pre>{{ $rootScope.lastQuiz | json }}</pre></div>
+            <div>What I get from a query <pre>{{ currUserQuizzes | json }}</pre></div>
+
+            <!-- QA SECTION -->
+            <div class="row well">
+                <!-- Questions-->
+                <div class="row clearfix">
+                    <div class="col-md-1 column">
+                    </div>
+                    <div class="col-md-11 column">
+                        <!-- TODO: Make a directive for questions -->
+                        <ol>
+                            <li data-ng-repeat="question in quiz.questionsFull" ng-init="takenQuiz.answers[question.id]={}">
+                                {{question.body}}
+
+                                <div class="row clearfix" >
+                                    <div class="col-md-1 column">
+                                    </div>
+                                    <div class="col-md-11 column">
+                                        <ul class="list-unstyled row">
+                                            <li data-ng-repeat="answer in question.answersFull"
+                                                qz-answer="takenQuiz.answers"
+                                                qz-answer-data="{answer:answer, question:question}"
+                                                >
+                                            <li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </li>
+                        </ol>
+                    </div>
+                </div>
+                <!-- End questions -->
+            </div>
+
+            <!-- Buttons-->
+            <div class="row clearfix">
+                <div class="col-md-8 column">
+                </div>
+                <div class="col-md-4 column">
+                    <div class="btn-group">
+                        <button class="btn btn-default" type="button" ng-click="saveQuiz(takenQuiz,quiz.questionsFull)"><em class="glyphicon glyphicon-save"></em>
+                            Submit
+                        </button>
+                        <button class="btn btn-default" type="button"><em class="glyphicon glyphicon-backward"></em>
+                            Cancel
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
