@@ -7,48 +7,85 @@
     mod.controller('SecCtrl', SecCtrl);
 
 
-    SecCtrl.$inject = ['$rootScope', '$scope','$firebase', '$timeout', 'QZ', 'fbDataService', 'qzUiDataService','$firebaseSimpleLogin'];
+    SecCtrl.$inject = ['$rootScope', '$scope', '$firebase', '$timeout', 'QZ', 'fbDataService', 'qzUiDataService', '$firebaseSimpleLogin'];
     function SecCtrl($rootScope, $scope, $firebase, $timeout, QZ, fbDataService, qzUiDataService, $firebaseSimpleLogin) {
 
-            var quiz;
+        var formTypes = {
+            registration: {
+                title: "Please Register",
+                button: "Register",
+                type: "register"
+            },
+            login: {
+                title: "Please login",
+                button: "Login",
+                type: "login"
+            }
+        }
 
-            console.log("$firebaseSimpleLogin", $firebaseSimpleLogin );
+        // get a reference to FB simple authentication
+        var dataRef = new Firebase(QZ.FB_ROOT);
+
+        // TODO: Putting this in scope for convenience but would probably be more secure to put only the
+        //  info needed for the UI into $scope.
+        $scope.loginObj = $firebaseSimpleLogin(dataRef);
 
 
-            // TODO: When security is added, update to pass in the logged in user.
-            // TODO: When the selection is added for which quiz to take, update to pass in selected quiz.
-            // create an empty record for the quiz we're about to take.
-            $scope.takenQuiz = qzUiDataService.createTakenQuiz( 'daden', 'FirstQuiz' );
+        $scope.sec = {};
+        $scope.alerts = [];
 
-            $scope.saveQuiz = function( takenQuiz, questionsFull ) {
-                qzUiDataService.saveTakenQuiz( takenQuiz, questionsFull );
 
-                // Repopulate the form after a little delay to avoid double submissions.
-                $timeout( function() {
-                    $scope.takenQuiz = qzUiDataService.createTakenQuiz( 'daden', 'FirstQuiz' );
-                },100)
+        $scope.formType = formTypes['registration'];
+        $scope.chooseForm = function (type) {
+            $scope.formType = formTypes[type];
+        }
+
+        $scope.doSec = function (type, email, password) {
+            console.log("in the doSec", type);
+            // register
+            if (type === 'register') {
+                $scope.loginObj.$createUser(email, password)
+                    .then( function(data) {
+                        console.log("createUser success", data );
+                    }, function(error) {
+                        console.log("createUser error", error  );
+                        $scope.alerts.push( { type: 'danger', msg: error.message } );
+                        $timeout(function() {
+                            $scope.alerts.splice(0,1);
+                        },3000)
+
+                    })
+
+            // login
+            } else if (type === 'login') {
+                $scope.loginObj.$login('password', {
+                    email: email,
+                    password: password
+                }).then(function (user) {
+                        console.log('Logged in as: ', user.uid);
+                    }, function (error) {
+                        console.error('Login failed: ', error);
+                    });
             }
 
-            // ****** Temp methods
-            // $scope.quiz = fbDataService.quizzes['FirstQuiz'];
+        }
 
-            $scope.setQuizName = function() {
-                fbDataService.quizzes.$save('FirstQuiz')
-            }
+        $scope.logout = function() {
+            $scope.loginObj.$logout()
+        }
 
-            $scope.getQuiz = function( quiz, inDepth ) {
-                $scope.result = qzUiDataService.getQuiz(quiz, inDepth);
-            }
-            $scope.getQuestions = function( quiz, inDepth ) {
-                $scope.result = qzUiDataService.getQuestions(quiz, inDepth);
-            }
-            $scope.getAnswers = function(question) {
-                $scope.result = qzUiDataService.getAnswers(question);
-            }
-            // ****** End Temp methods
-            // console.log("quiz", fbDataService );
+
+        $scope.addAlert = function() {
+            $scope.alerts.push({msg: "Another alert!"});
+        };
+
+        $scope.closeAlert = function(index) {
+            $scope.alerts.splice(index, 1);
+        };
+
+        console.log("$firebaseSimpleLogin", $firebaseSimpleLogin);
 
 
     }
 
-}(angular, angular.module('SecModule',[])));
+}(angular, angular.module('SecModule', [])));

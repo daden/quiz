@@ -1,73 +1,51 @@
-<div class="container" ng-hide="loading">
-    <div class="row clearfix">
-        <div class="col-md-12 column">
-            <h3>
-                Security!!!!
-            </h3>
-            <!--<div>
-                <pre>{{ inDepth }}</pre>
-                <pre>{{ result | json }} </pre>
-            </div>
+<div class="container">
+    <div class="row">
+        <div class="col-md-6 col-md-offset-3 text-center">
+            <span ng-show="loginObj.user == null">
+                <a href="" ng-click="chooseForm('registration')">Registration</a>
+                &nbsp;&nbsp;
+                <a href="" ng-click="chooseForm('login')">Login</a>
+            </span>
+            <span ng-hide="loginObj.user == null">
+                Welcome {{loginObj.user.email }}!!
+                &nbsp;&nbsp;
+                <a href="" ng-click="logout('logout')">Logout</a>
+            </span>
 
-            <div>
-                <input data-ng-model="query" size="50" value="FirstQuiz"></input>
-                <input type="checkbox" data-ng-model="inDepth">
-                <button data-ng-click="getAnswers(query)">Get Answers!</button>
-                <button data-ng-click="getQuestions(query, inDepth)">Get Questions</button>
-                <button data-ng-click="getQuiz(query, inDepth)">Get Quiz</button>
-
-            </div>-->
-            <!-- Debugging-->
-            <!--<div><pre>{{takenQuiz | json }}</pre></div>-->
-            <!--<div><pre>{{quiz.questionsFull | json }}</pre></div>-->
-
-            <!-- QA SECTION -->
-            <div class="row well">
-                <!-- Questions-->
-                <div class="row clearfix">
-                    <div class="col-md-1 column">
-                    </div>
-                    <div class="col-md-11 column">
-                        <!-- TODO: Make a directive for questions -->
-                        <ol>
-                            <li data-ng-repeat="question in quiz.questionsFull" ng-init="takenQuiz.answers[question.id]={}">
-                                {{question.body}}
-
-                                <div class="row clearfix" >
-                                    <div class="col-md-1 column">
-                                    </div>
-                                    <div class="col-md-11 column">
-                                        <ul class="list-unstyled row">
-                                            <li data-ng-repeat="answer in question.answersFull"
-                                                qz-answer="takenQuiz.answers"
-                                                qz-answer-data="{answer:answer, question:question}"
-                                                >
-                                            <li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </li>
-                        </ol>
-                    </div>
+        </div>
+    </div>
+    <div class="row voffset2">
+        <div class="col-md-6 col-md-offset-3">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">{{formType.title}}</h3>
                 </div>
-                <!-- End questions -->
-            </div>
-
-            <!-- Buttons-->
-            <div class="row clearfix">
-                <div class="col-md-8 column">
-                </div>
-                <div class="col-md-4 column">
-                    <div class="btn-group">
-                        <button class="btn btn-default" type="button" ng-click="saveQuiz(takenQuiz,quiz.questionsFull)"><em class="glyphicon glyphicon-save"></em>
-                            Submit
-                        </button>
-                        <button class="btn btn-default" type="button"><em class="glyphicon glyphicon-backward"></em>
-                            Cancel
-                        </button>
-                    </div>
+                <div class="panel-body">
+                    <form accept-charset="UTF-8" role="form">
+                        <fieldset>
+                            <div class="form-group">
+                                <input ng-model="sec.email" class="form-control" placeholder="E-mail" name="email" type="text">
+                            </div>
+                            <div class="form-group">
+                                <input ng-model="sec.password" class="form-control" placeholder="Password" name="password" type="password" value="">
+                            </div>
+                            <!--<div class="checkbox">
+                                <label>
+                                    <input name="remember" type="checkbox" value="Remember Me"> Remember Me
+                                </label>
+                            </div>-->
+                            <input class="btn btn-lg btn-success btn-block" type="submit"
+                                ng-click="doSec(formType.type,sec.email,sec.password)" value="{{formType.button}}">
+                        </fieldset>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
+    <div class="row">
+        <div class="col-md-12 text-center" >
+            <span class="alert-danger" ng-repeat="alert in alerts" type="alert.type" close="closeAlert($index)">{{alert.msg}}</span>
+        </div>
+    </div>
+    <div class="voffset4"><pre>{{loginObj}}</pre></div>
 </div>
