@@ -28,7 +28,7 @@
         }
 
         $scope.showUserAnswer = function ( question, currUserQuiz ) {
-            var userAnswer = currUserQuiz.answers[question.id];
+            var userAnswer = currUserQuiz.answers && currUserQuiz.answers[question.id] ? currUserQuiz.answers[question.id] : -1;
             var ans = _.find(question.answersFull, function(answer) {
                 return answer.id = userAnswer;
             })
