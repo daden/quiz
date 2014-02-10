@@ -5,12 +5,14 @@
     var config = {
         FB_ROOT: "https://surveyamoeba.firebaseio.com/"
     }
+    // constants
     config = ng.extend(config, {
         FB_QUIZZES: config.FB_ROOT + 'quizzes',
         FB_USERS: config.FB_ROOT + 'users',
         FB_QUESTIONS: config.FB_ROOT + 'questions',
         FB_ANSWERS: config.FB_ROOT + 'answers',
-        FB_QUIZZES_TAKEN: config.FB_ROOT + 'quizzestaken'
+        FB_QUIZZES_TAKEN: config.FB_ROOT + 'quizzestaken',
+        CURRENT_QUIZ: 'FirstQuiz'
     })
 
     // Basic module
@@ -52,7 +54,7 @@
         .run( function($rootScope, $location, $timeout, QZ, $firebaseSimpleLogin) {
 
             $rootScope.$watch('loginObj.user', function( newVal, oldVal ) {
-                console.log("in the watch", newVal, oldVal, angular.equals(newVal, oldVal) );
+                // console.log("in the watch", newVal, oldVal, angular.equals(newVal, oldVal) );
                 if( angular.isObject(newVal) && ! $rootScope.currUser ) {
                     var ref = new Firebase(QZ.FB_USERS);
                     ref.startAt($rootScope.loginObj.user.email)
@@ -62,7 +64,7 @@
                                 email = snap.val()[user].email;
 
                             $rootScope.currUser = { user: user, email:email } ;
-                            console.log("currUser in the running", $rootScope.currUser, snap.val(), snap );
+                            // console.log("currUser in the running", $rootScope.currUser, snap.val(), snap );
                         })
                 }
 

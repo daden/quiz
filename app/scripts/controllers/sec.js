@@ -115,6 +115,10 @@
         $scope.startQuiz = function() {
             $location.path("/quiz");
         }
+        $scope.seeQuizResults = function() {
+            $location.path("/quizResults");
+        }
+
         $scope.logout = function() {
             $rootScope.currUser = {};
             $rootScope.loginObj.$logout()

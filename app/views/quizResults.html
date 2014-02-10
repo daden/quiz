@@ -1,60 +1,100 @@
-<div class="container" ng-hide="loading">
+<!--<div class="container" ng-hide="loading">
+    <div class="row clearfix">
+        <div class="col-md-12 column text-center">
+            You Scored: 20%
+        </div>
+    </div>
     <div class="row clearfix">
         <div class="col-md-12 column">
-            <h3>
-                Quiz RESULTS
-            </h3>
-
-            <div>What's int rootScope<pre>{{ $rootScope.lastQuiz | json }}</pre></div>
-            <div>What I get from a query <pre>{{ currUserQuizzes | json }}</pre></div>
-
-            <!-- QA SECTION -->
-            <div class="row well">
-                <!-- Questions-->
-                <div class="row clearfix">
-                    <div class="col-md-1 column">
-                    </div>
-                    <div class="col-md-11 column">
-                        <!-- TODO: Make a directive for questions -->
-                        <ol>
-                            <li data-ng-repeat="question in quiz.questionsFull" ng-init="takenQuiz.answers[question.id]={}">
-                                {{question.body}}
-
-                                <div class="row clearfix" >
-                                    <div class="col-md-1 column">
-                                    </div>
-                                    <div class="col-md-11 column">
-                                        <ul class="list-unstyled row">
-                                            <li data-ng-repeat="answer in question.answersFull"
-                                                qz-answer="takenQuiz.answers"
-                                                qz-answer-data="{answer:answer, question:question}"
-                                                >
-                                            <li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </li>
-                        </ol>
-                    </div>
-                </div>
-                <!-- End questions -->
-            </div>
-
-            <!-- Buttons-->
+            Question 1
             <div class="row clearfix">
-                <div class="col-md-8 column">
-                </div>
-                <div class="col-md-4 column">
-                    <div class="btn-group">
-                        <button class="btn btn-default" type="button" ng-click="saveQuiz(takenQuiz,quiz.questionsFull)"><em class="glyphicon glyphicon-save"></em>
-                            Submit
-                        </button>
-                        <button class="btn btn-default" type="button"><em class="glyphicon glyphicon-backward"></em>
-                            Cancel
-                        </button>
-                    </div>
+                <div class="col-md-12 column">
+                    Correct and Incorrect answers
                 </div>
             </div>
         </div>
+    </div>
+</div>-->
+
+<div class="container" ng-hide="loading">
+    <div class="row clearfix">
+        <div class="col-md-12 column text-center">
+            <h2>You Scored: {{ currUserQuiz.result.percent * 100 | number:0 }}%</h2>
+        </div>
+    </div>
+    <div class="row clearfix voffset2">
+        <div class="col-md-8 col-md-offset-2 column">
+            <ol>
+                <li data-ng-repeat="question in quiz.questionsFull">
+                    {{question.body}}
+
+                    <div class="row clearfix voffset1" >
+                        <div class="col-md-12 column">
+                            <ul class="list-unstyled">
+                                <li ng-if="currUserQuiz.answersRight[question.id]" class="alert-success">
+                                    <div class="row">
+                                        <div class="col-md-11 col-md-offset-1 voffset2">
+                                            Correct!
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-11 col-md-offset-1 voffset1">
+                                            <i class="arrow-right"></i>{{ showAnswer(question, question.correctAnswer) }}
+                                        </div>
+                                    </div>
+                                    <div class="row voffset2"></div>
+                                </li>
+                                <li ng-if="! currUserQuiz.answersRight[question.id]" class="alert-danger">
+                                    <div class="row">
+                                        <div class="col-md-11 col-md-offset-1 voffset2">
+                                            You answered incorrectly:
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-11 col-md-offset-1 voffset1">
+                                            {{ showUserAnswer( question, currUserQuiz ) }}
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-11 col-md-offset-1 voffset2">
+                                            Correct Answer:
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-11 col-md-offset-1 voffset1">
+                                            {{ showAnswer(question, question.correctAnswer) }}
+                                        </div>
+                                    </div>
+                                    <div class="row voffset2"></div>
+
+                                    <!--<i class="glyphicon-asterisk"></i>{{ showUserAnswer( question, currUserQuiz ) }} <br />
+                                    Correct answer <br />
+                                    <i class="glyphicon-asterisk"></i>{{ showAnswer( question, question.correctAnswer) }}-->
+                                </li>
+
+
+                                <!--<li data-ng-repeat="answer in question.answersFull"
+                                    qz-answer="takenQuiz.answers"
+                                    qz-answer-data="{answer:answer, question:question}"
+                                        >
+                                <li>-->
+
+                            </ul>
+                        </div>
+                    </div>
+                </li>
+            </ol>
+        </div>
+    </div>
+</div>
+
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">The Quiz<pre>{{ quiz | json }}</pre></div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">What I get from a query <pre>{{ currUserQuiz | json }}</pre></div>
     </div>
 </div>

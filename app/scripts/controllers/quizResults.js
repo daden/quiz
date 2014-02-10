@@ -14,10 +14,27 @@
         ref.startAt( $rootScope.currUser.email )
             .endAt( $rootScope.currUser.email )
             .on('value', function(snap) {
-                $scope.currUserQuizzes = snap.val()
+                var key = _.keys( snap.val() )[0];
+                $scope.currUserQuiz = snap.val()[key];
             })
 
+        $scope.quiz = qzUiDataService.getQuiz(QZ.CURRENT_QUIZ, true);
 
+        $scope.showAnswer = function( question, answer ) {
+
+            var ans = _.find(question.answersFull, function(ans) {
+                        return ans.id == question.correctAnswer;
+                    })
+            return (ans && ans.body) || '';
+        }
+
+        $scope.showUserAnswer = function ( question, currUserQuiz ) {
+            var userAnswer = currUserQuiz.answers[question.id];
+            var ans = _.find(question.answersFull, function(answer) {
+                return answer.id = userAnswer;
+            })
+            return (ans && ans.body) || '';
+        }
     }
 
 }(angular, angular.module('quizModule')));

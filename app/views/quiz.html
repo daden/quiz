@@ -12,7 +12,6 @@
                     <div class="col-md-1 column">
                     </div>
                     <div class="col-md-11 column">
-                        <!-- TODO: Make a directive for questions -->
                         <ol>
                             <li data-ng-repeat="question in quiz.questionsFull" ng-init="takenQuiz.answers[question.id]={}">
                                 {{question.body}}

@@ -39,8 +39,8 @@
         }
     }
 
-    quizCtrl.$inject = ['$rootScope', '$scope','$firebase', '$timeout', 'QZ', 'fbDataService', 'qzUiDataService'];
-    function quizCtrl($rootScope, $scope, $firebase, $timeout, QZ, fbDataService, qzUiDataService) {
+    quizCtrl.$inject = ['$rootScope', '$scope','$firebase', '$timeout', '$location', 'QZ', 'fbDataService', 'qzUiDataService'];
+    function quizCtrl($rootScope, $scope, $firebase, $timeout, $location, QZ, fbDataService, qzUiDataService) {
 
             var quiz;
 
@@ -69,6 +69,8 @@
                 $timeout( function() {
                     $scope.takenQuiz = qzUiDataService.createTakenQuiz( 'daden', 'FirstQuiz' );
                 },100)
+
+                $location.path("/quizResults");
             }
 
             // ****** Temp methods

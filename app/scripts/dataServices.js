@@ -43,8 +43,10 @@
             users: users,
             quizzes: quizzes,
             questions: questions,
-            answers: answers,
-            quizzesTaken: quizzesTaken
+            answers: answers
+            // NOTE: Commented out because it caused problems when also using FB methods to update the data --
+            //  events in one would 'echo' in the other and create double entries.
+            // quizzesTaken: quizzesTaken
         }
 
     }
@@ -115,12 +117,33 @@
             }
 
             takenQuiz.createDt = (new Date()).toString();
-            console.log("takenQuiz", takenQuiz );
+
             // Originally did this with $firebase but it is a total PITA on some things
-            // Add the quiz results to FB
             // var id = fbDataService.quizzesTaken.$add(takenQuiz);
 
+            // get the user's quiz if it exists
             var ref = new Firebase(QZ.FB_QUIZZES_TAKEN);
+            ref.startAt( $rootScope.currUser.email )
+                .endAt( $rootScope.currUser.email )
+                .once('value', function(snap) {
+                    // quiz exists
+                    if( ! _.isNull(snap.val()) ) {
+                        var key = _.keys(snap.val())[0];
+                        ref.child( key ).setWithPriority(takenQuiz, $rootScope.currUser.email);
+                    // create new
+                    } else {
+                        // creating a new one
+                        var qt = ref.push(takenQuiz);
+                        qt.setPriority( $rootScope.currUser.email );
+                        qt.once('value', function( snap ) {
+                            $rootScope.lastQuiz = snap.val();
+                        });
+
+                    }
+                })
+
+
+            /*var ref = new Firebase(QZ.FB_QUIZZES_TAKEN);
             var qt = ref.push(takenQuiz);
             qt.setPriority( $rootScope.currUser.email );
             qt.on('value', function( snap ) {
@@ -128,7 +151,7 @@
                 console.log("snap", snap.val() );
                 // $rootScope.currUser = { email: snap.val(), key: snap.name() };
                 // $location.path( "/quiz" );
-            });
+            });*/
             
         }
 
