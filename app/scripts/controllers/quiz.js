@@ -47,7 +47,7 @@
             var checkIt = function() {
                 var ret = $timeout( function() {
                     if( ! $rootScope.loading ) {
-                        $scope.quiz = qzUiDataService.getQuiz('FirstQuiz', true);
+                        $scope.quiz = qzUiDataService.getQuiz(QZ.CURRENT_QUIZ, true);
                     } else {
                         checkIt()
                     }
@@ -55,20 +55,22 @@
                 return ret;
             };
 
-            checkIt();
+            if( ! ng.isDefined( $scope.quiz ) ) {
+                checkIt();
+            }
 
             // TODO: When security is added, update to pass in the logged in user.
             // TODO: When the selection is added for which quiz to take, update to pass in selected quiz.
             // create an empty record for the quiz we're about to take.
-            $scope.takenQuiz = qzUiDataService.createTakenQuiz( $rootScope.currUser, 'FirstQuiz' );
+            $scope.takenQuiz = qzUiDataService.createTakenQuiz( $rootScope.currUser, QZ.CURRENT_QUIZ );
 
             $scope.saveQuiz = function( takenQuiz, questionsFull ) {
                 qzUiDataService.saveTakenQuiz( takenQuiz, questionsFull );
 
                 // Repopulate the form after a little delay to avoid double submissions.
-                $timeout( function() {
-                    $scope.takenQuiz = qzUiDataService.createTakenQuiz( 'daden', 'FirstQuiz' );
-                },100)
+                /*$timeout( function() {
+                    $scope.takenQuiz = qzUiDataService.createTakenQuiz( 'daden', QZ.CURRENT_QUIZ );
+                },100)*/
 
                 $location.path("/quizResults");
             }
@@ -77,7 +79,7 @@
             // $scope.quiz = fbDataService.quizzes['FirstQuiz'];
 
             $scope.setQuizName = function() {
-                fbDataService.quizzes.$save('FirstQuiz')
+                fbDataService.quizzes.$save(QZ.CURRENT_QUIZ)
             }
 
             $scope.getQuiz = function( quiz, inDepth ) {

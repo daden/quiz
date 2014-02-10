@@ -23,10 +23,12 @@
         </div>
     </div>
     <div class="row clearfix voffset2">
-        <div class="col-md-8 col-md-offset-2 column">
+        <div class="col-md-9 col-md-offset-1">
             <ol>
                 <li data-ng-repeat="question in quiz.questionsFull">
-                    {{question.body}}
+                    <span ng-show="question.hasHTML" ng-bind-html="question.body"></span>
+                    <span ng-hide="question.hasHTML">{{question.body}}</span>
+                    <!--{{question.body}}-->
 
                     <div class="row clearfix voffset1" >
                         <div class="col-md-12 column">

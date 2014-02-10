@@ -12,7 +12,7 @@
         FB_QUESTIONS: config.FB_ROOT + 'questions',
         FB_ANSWERS: config.FB_ROOT + 'answers',
         FB_QUIZZES_TAKEN: config.FB_ROOT + 'quizzestaken',
-        CURRENT_QUIZ: 'FirstQuiz'
+        CURRENT_QUIZ: 'RealQuiz'
     })
 
     // Basic module
