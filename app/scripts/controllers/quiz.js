@@ -4,9 +4,22 @@
     // mod.factory('cpCriteriaFormCtrl', cpCriteriaFormCtrl);
     // mod.directive('cpCriteriaForm', cpCriteriaForm);
 
-    mod.controller('quizCtrl', quizCtrl);
-    mod.directive('qzAnswer', qzAnswer);
+    mod.controller('quizCtrl', quizCtrl );
+    mod.directive('qzAnswer', qzAnswer );
+    mod.directive('qzHeader', qzHeader );
 
+
+    qzHeader.$inject = ['$location'];
+    function qzHeader($location) {
+        return {
+            template: "<!--<div class=\"col-md-6 col-md-offset-3 text-center\" ng-hide=\"loginObj.user == null\">-->\n<div class=\"col-md-6 col-md-offset-3 text-center\">\n    Welcome {{loginObj.user.email }}!!\n    &nbsp;&nbsp;\n    <a href=\"\" ng-click=\"logout(\'logout\')\">Logout</a>\n    &nbsp;&nbsp;\n    <a href=\"\" ng-click=\"login()\">Login Screen</a>\n\n</div>",
+            link: function(scope,element,attrs) {
+                scope.login = function() {
+                    $location.path('/login');
+                }
+            }
+        }
+    }
 
     qzAnswer.$inject = ['$parse','$compile'];
     function qzAnswer($parse, $compile) {
@@ -42,27 +55,39 @@
     quizCtrl.$inject = ['$rootScope', '$scope','$firebase', '$timeout', '$location', 'QZ', 'fbDataService', 'qzUiDataService'];
     function quizCtrl($rootScope, $scope, $firebase, $timeout, $location, QZ, fbDataService, qzUiDataService) {
 
-            var quiz;
+            var quiz, quizState;
+            $scope.SHOW_ALL_QUESTIONS = QZ.SHOW_ALL_QUESTIONS;
 
+            // Sorta hinky thing to make sure FB angularFire isn't still putzing around
             var checkIt = function() {
                 var ret = $timeout( function() {
                     if( ! $rootScope.loading ) {
                         $scope.quiz = qzUiDataService.getQuiz(QZ.CURRENT_QUIZ, true);
+                        $scope.quizState = quizState = { currQ: 0, quizLength: $scope.quiz.questionsFull.length };
                     } else {
                         checkIt()
                     }
                 },100)
                 return ret;
             };
-
             if( ! ng.isDefined( $scope.quiz ) ) {
                 checkIt();
             }
 
-            // TODO: When security is added, update to pass in the logged in user.
-            // TODO: When the selection is added for which quiz to take, update to pass in selected quiz.
             // create an empty record for the quiz we're about to take.
             $scope.takenQuiz = qzUiDataService.createTakenQuiz( $rootScope.currUser, QZ.CURRENT_QUIZ );
+
+            // navigate when we show one question at a time
+            $scope.nextQuestion = function( currIdx ) {
+                if ( currIdx > quizState.quizLength ) {
+                    // noop
+                } else {
+                    quizState.currQ++;
+                }
+            }
+            $scope.previousQuestion = function( currIdx ) {
+                quizState.currQ--;
+            }
 
             $scope.saveQuiz = function( takenQuiz, questionsFull ) {
                 qzUiDataService.saveTakenQuiz( takenQuiz, questionsFull );

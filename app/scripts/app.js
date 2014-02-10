@@ -12,7 +12,8 @@
         FB_QUESTIONS: config.FB_ROOT + 'questions',
         FB_ANSWERS: config.FB_ROOT + 'answers',
         FB_QUIZZES_TAKEN: config.FB_ROOT + 'quizzestaken',
-        CURRENT_QUIZ: 'RealQuiz'
+        CURRENT_QUIZ: 'RealQuiz',
+        SHOW_ALL_QUESTIONS: false           // option to show all questions at once (buttons and things not fully implemented in the UI)
     })
 
     // Basic module

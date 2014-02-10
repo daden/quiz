@@ -21,7 +21,6 @@
         $scope.quiz = qzUiDataService.getQuiz(QZ.CURRENT_QUIZ, true);
 
         $scope.showAnswer = function( question, answer ) {
-
             var ans = _.find(question.answersFull, function(ans) {
                         return ans.id == question.correctAnswer;
                     })

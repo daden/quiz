@@ -119,9 +119,10 @@
             $location.path("/quizResults");
         }
 
-        $scope.logout = function() {
+        $rootScope.logout = function() {
             $rootScope.currUser = {};
             $rootScope.loginObj.$logout()
+            $location.path('/login');
         }
 
         // console.log("$firebaseSimpleLogin", $firebaseSimpleLogin);

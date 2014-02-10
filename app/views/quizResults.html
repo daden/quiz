@@ -1,22 +1,7 @@
-<!--<div class="container" ng-hide="loading">
-    <div class="row clearfix">
-        <div class="col-md-12 column text-center">
-            You Scored: 20%
-        </div>
-    </div>
-    <div class="row clearfix">
-        <div class="col-md-12 column">
-            Question 1
-            <div class="row clearfix">
-                <div class="col-md-12 column">
-                    Correct and Incorrect answers
-                </div>
-            </div>
-        </div>
-    </div>
-</div>-->
-
 <div class="container" ng-hide="loading">
+
+    <div class="row" qz-header></div>
+
     <div class="row clearfix">
         <div class="col-md-12 column text-center">
             <h2>You Scored: {{ currUserQuiz.result.percent * 100 | number:0 }}%</h2>
@@ -28,7 +13,6 @@
                 <li data-ng-repeat="question in quiz.questionsFull">
                     <span ng-show="question.hasHTML" ng-bind-html="question.body"></span>
                     <span ng-hide="question.hasHTML">{{question.body}}</span>
-                    <!--{{question.body}}-->
 
                     <div class="row clearfix voffset1" >
                         <div class="col-md-12 column">
@@ -91,7 +75,8 @@
     </div>
 </div>
 
-
+<!-- Debugging stuff -->
+<!--
 <div class="container">
     <div class="row">
         <div class="col-md-12">The Quiz<pre>{{ quiz | json }}</pre></div>
@@ -99,4 +84,4 @@
     <div class="row">
         <div class="col-md-12">What I get from a query <pre>{{ currUserQuiz | json }}</pre></div>
     </div>
-</div>
+</div>-->
