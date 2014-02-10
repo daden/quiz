@@ -12,8 +12,6 @@
             <div class="row well">
                 <!-- Questions-->
                 <div class="row clearfix">
-                    <!--<div class="col-md-1 column">
-                    </div>-->
                     <div class="col-md-11 col-md-offset-1 column">
                         <ol ng-class="{'list-unstyled': quizState.currQ == quizState.quizLength && ! SHOW_ALL_QUESTIONS}">
                             <li data-ng-repeat="question in quiz.questionsFull" ng-init="takenQuiz.answers[question.id]={}"
@@ -60,16 +58,11 @@
 
             <!-- Buttons-->
             <div class="row clearfix" ng-show="SHOW_ALL_QUESTIONS || quizState.currQ == quizState.quizLength">
-                <!--<div class="col-md-8 column">
-                </div>-->
                 <div class="col-md-2 column col-md-offset-10">
                     <div class="btn-group">
                         <button class="btn btn-success" type="button" ng-click="saveQuiz(takenQuiz,quiz.questionsFull)"><em class="glyphicon glyphicon-save"></em>
                             Submit
                         </button>
-                        <!--<button class="btn btn-default" type="button"><em class="glyphicon glyphicon-backward"></em>
-                            Cancel
-                        </button>-->
                     </div>
                 </div>
             </div>

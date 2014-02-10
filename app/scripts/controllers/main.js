@@ -2,11 +2,7 @@
 
 angular.module('quizApp')
     .controller('MainCtrl', function ($scope) {
-        $scope.awesomeThings = [
-            'HTML5 Boilerplate',
-            'AngularJS',
-            'Karma'
-        ];
+
     })
 
     // directive to blank out the screen while loading FB data. Temp solution to make sure we don't get errors

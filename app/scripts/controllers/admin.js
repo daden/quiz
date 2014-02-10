@@ -3,6 +3,23 @@
 
     mod.controller('adminCtrl', adminCtrl);
 
+    var code =
+        'angular.module("myModule",[]).service("myService",(function() { \n' +
+            '    var message = "Message one!" \n' +
+            '    var getMessage = function() { \n' +
+            '        return this.message; \n' +
+            '    } \n' +
+            '    this.message = "Message two!"; \n' +
+            '    this.getMessage = function() { return message } \n' +
+            '    return function() { \n' +
+            '        return { \n' +
+            '            getMessage: getMessage, \n' +
+            '            message: "Message three!" \n' +
+            '        } \n' +
+            '    } \n' +
+            '})()) \n';
+
+
     adminCtrl.$inject = ['$scope','$firebase','QZ', 'fbDataService'];
     function adminCtrl($scope, $firebase, QZ, fbDataService) {
 
@@ -13,7 +30,7 @@
                     answers: false,
                     users: false,
                     quizzesTaken: false,
-                    realQuiz: false
+                    realQuiz: true
                 },
                 deleteStuff = {
                     quizzesTaken: false
@@ -22,32 +39,9 @@
             if( repop.realQuiz ) {
                 // create the quiz
                 currRef = $firebase(new Firebase(QZ.FB_QUIZZES));
-                currRef["RealQuiz"] = {name:"Real Quiz",questions:['sfq1','sfq2','sfq3','sfq5','sfq6'], description:"This is the straightforward test"};
+                currRef["RealQuiz"] = {name:"Real Quiz",questions:['sfq1','sfq2','sfq3', 'sfq4', 'sfq5','sfq6'], description:"This is the straightforward test"};
+                // currRef["RealQuiz"] = {name:"Real Quiz",questions:['sfq4','sfq1'], description:"This is the straightforward test"};
                 currRef.$save("RealQuiz");
-
-                // return;
-
-                // create the answers
-                /*currRef = $firebase(new Firebase(QZ.FB_ANSWERS));
-                child = currRef.$child('q1');
-                child.answers = ['a1','a2'];
-                child.$save('answers');*/
-
-var code =
-'angular.module("myModule",[]).service("myService",(function() { \n' +
-'    var message = "Message one!" \n' +
-'    var getMessage = function() { \n' +
-'        return this.message; \n' +
-'    } \n' +
-'    this.message = "Message two!"; \n' +
-'    this.getMessage = function() { return message } \n' +
-'    return function() { \n' +
-'        return { \n' +
-'            getMessage: getMessage, \n' +
-'            message: "Message three!" \n' +
-'        } \n' +
-'    } \n' +
-'})()) \n';
 
                 // Questions
                 var questions = [{
@@ -70,12 +64,12 @@ var code =
                         // answers: ["4a","4b"],
                         answers: ["4a"],
                         type: "text",
-                        correctAnswer: "<dt><dd>"
+                        correctAnswer: "4a"
                     }, {
                         body: "Given &lt;div id=”outer”&gt;&lt;div class=”inner”&gt;&lt;/div&gt;&lt;/div&gt;, which of these two is the most performant way to select the inner div?",
                         answers: ["5a","5b"],
                         type: "radio",
-                        hasHTML: false,
+                        hasHTML: true,
                         correctAnswer: "5a"
                     }, {
                         body: "Given this: <pre><code>" + code + "</code></pre> Which message wioll be returned by injecting this service and executing 'myService.getMessage()'",
@@ -147,6 +141,7 @@ var code =
                     name: "3c"
                 }, {
                     body: "",
+                    val: "<dd><dt>",
                     name: "4a"
                 },
                     /* {
@@ -176,6 +171,9 @@ var code =
                     var answerName = "sfa" + currAnswer.name;
                     child = currRef.$child( answerName );
                     child.body = currAnswer.body;
+                    if( currAnswer.val ) {
+                        child.val = currAnswer.val;
+                    }
                     child.$save();
                 }
 
@@ -220,16 +218,6 @@ var code =
                 currRef = $firebase(new Firebase(QZ.FB_QUIZZES_TAKEN) );
                 child = currRef.$remove();
             }
-
-
-            /*var child = quizRef.$child("FirstQuiz");
-            child['foo'] = 'bear';
-            child.$save('foo');*/
-
-            // console.log("getindex", quizRef );
-            // dump(quizRef);
-
-            // quizRef.$remove("SecondQuiz")
 
             if( currRef ) {
                 currRef.$on('loaded', function(data) {

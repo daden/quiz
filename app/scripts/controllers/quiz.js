@@ -28,7 +28,7 @@
         var templates = {
             radio: '<div>\n    <label>\n        <input name="{{question.id}}" type="radio" ng-value="answer.id"\n            ng-model="takenQuiz[question.id]"> {{answer.body}} ({{answer.id}})\n    </label>\n</div>',
             checkbox: '<div>\n    <label>\n        <input name="{{question.id}}" type="checkbox" \n            ng-model="takenQuiz[question.id][answer.id]"> {{answer.body}} ({{answer.id}})\n    </label>\n</div>',
-            text: '<div>\n    <label>\n        <input name="{{question.id}}" type="text" \n            ng-model="takenQuiz[question.id][answer.id]"> {{answer.body}} ({{answer.id}})\n    </label>\n</div>',
+            text: '<div> \n    <label>\n        <input name="{{question.id}}" type="text" \n            ng-model="takenQuiz[question.id][answer.id]"> ({{answer.id}})\n    </label>\n</div>',
             textarea: '<div>\n    <label>\n        <textarea name="{{question.id}}" cols="50" rows="3" ng-init="takenQuiz[question.id]=\'\'" \n            data-ng-model="takenQuiz[question.id]"></textarea> ({{answer.id}})\n    </label>\n</div>'
         }
         return {
@@ -45,6 +45,7 @@
                 if( ! (scope.question && scope.question.type) ) {
                     return;
                 }
+
                 var tmpl = $compile(templates[scope.question.type])(scope);
                 element.append(tmpl);
 

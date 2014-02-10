@@ -200,9 +200,14 @@
 
                     case 'text':
                     case 'textarea':
+                        // text items should only be assigned to one answer and the answer string is in the
+                        //  full answer's 'val' property
+                        var textAnswer = question.answersFull[0].val,
+                            answerId = question.answersFull[0].id;
+
                         // For now, just check if the text response contains the string that is the correct answer.
                         //  Would need to be a much more involved check.
-                        if( ! ~takenQuiz.answers[question.id].search(question.correctAnswer) ) {
+                        if( ! ~takenQuiz.answers[question.id][answerId].search(textAnswer) ) {
                             grade(takenQuiz,false, question.id);
                         } else {
                             grade(takenQuiz,true, question.id);

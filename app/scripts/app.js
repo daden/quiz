@@ -22,10 +22,10 @@
 
         .config(function ($routeProvider) {
             $routeProvider
-                .when('/', {
+                /*.when('/', {
                     templateUrl: 'views/main.html',
                     controller: 'MainCtrl'
-                })
+                })*/
                 .when('/login', {
                     templateUrl: 'views/sec.html',
                     controller: 'SecCtrl'
@@ -47,7 +47,7 @@
                     controller: 'testingGroundCtrl'
                 })
                 .otherwise({
-                    redirectTo: '/'
+                    redirectTo: '/login'
                 });
         })
         .constant('QZ', config)
