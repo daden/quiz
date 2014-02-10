@@ -44,7 +44,7 @@
             quizzes: quizzes,
             questions: questions,
             answers: answers
-            // NOTE: Commented out because it caused problems when also using FB methods to update the data --
+            // Not using quizzesTaken because it caused problems when also using FB methods to update the data --
             //  events in one would 'echo' in the other and create double entries.
             // quizzesTaken: quizzesTaken
         }
@@ -53,7 +53,6 @@
 
     qzUiDataService.$inject = ['fbDataService','$rootScope','QZ'];
     function qzUiDataService(fbDataService,$rootScope,QZ) {
-
 
         // Quiz's data
         function getQuiz( quiz, inDepth ) {
@@ -118,9 +117,6 @@
 
             takenQuiz.createDt = (new Date()).toString();
 
-            // Originally did this with $firebase but it is a total PITA on some things
-            // var id = fbDataService.quizzesTaken.$add(takenQuiz);
-
             // get the user's quiz if it exists
             var ref = new Firebase(QZ.FB_QUIZZES_TAKEN);
             ref.startAt( $rootScope.currUser.email )
@@ -132,7 +128,6 @@
                         ref.child( key ).setWithPriority(takenQuiz, $rootScope.currUser.email);
                     // create new
                     } else {
-                        // creating a new one
                         var qt = ref.push(takenQuiz);
                         qt.setPriority( $rootScope.currUser.email );
                         qt.once('value', function( snap ) {
@@ -141,33 +136,22 @@
 
                     }
                 })
-
-
-            /*var ref = new Firebase(QZ.FB_QUIZZES_TAKEN);
-            var qt = ref.push(takenQuiz);
-            qt.setPriority( $rootScope.currUser.email );
-            qt.on('value', function( snap ) {
-                $rootScope.lastQuiz = snap.val();
-                console.log("snap", snap.val() );
-                // $rootScope.currUser = { email: snap.val(), key: snap.name() };
-                // $location.path( "/quiz" );
-            });*/
-            
         }
 
         // Compare the answers given to the correct answers taking into account the type of question (text or
         //  multiple choice. If the didn't answer a question, it will be counted as wrong
-        // For now we'll assume the display type will tell us whether it is single or multiple choice, probably
-        //  should specify that separately if this was going to be used.
+        // For now we'll assume the HTML input type will tell us whether it is single or multiple choice.
         function gradeQuiz( takenQuiz, questionsFull ) {
             for( var k=0; k < questionsFull.length; k++ ) {
                 var question = questionsFull[k];
 
+                // they didn't answer, it's wrong
                 if( ! ng.isDefined(takenQuiz.answers[question.id]) ) {
                     grade(takenQuiz, false, question.id);
                     continue;
                 }
 
+                //  grade each type
                 var type = question.type;
                 switch( type ) {
                     case 'radio':
@@ -206,7 +190,7 @@
                             answerId = question.answersFull[0].id;
 
                         // For now, just check if the text response contains the string that is the correct answer.
-                        //  Would need to be a much more involved check.
+                        //  Obviously, way simpler than would be needed
                         if( ! ~takenQuiz.answers[question.id][answerId].search(textAnswer) ) {
                             grade(takenQuiz,false, question.id);
                         } else {

@@ -13,7 +13,7 @@
         FB_ANSWERS: config.FB_ROOT + 'answers',
         FB_QUIZZES_TAKEN: config.FB_ROOT + 'quizzestaken',
         CURRENT_QUIZ: 'RealQuiz',
-        SHOW_ALL_QUESTIONS: false           // option to show all questions at once (buttons and things not fully implemented in the UI)
+        SHOW_ALL_QUESTIONS: false           // option to show all questions at once (may not be fully handled in the UI)
     })
 
     // Basic module
@@ -22,10 +22,6 @@
 
         .config(function ($routeProvider) {
             $routeProvider
-                /*.when('/', {
-                    templateUrl: 'views/main.html',
-                    controller: 'MainCtrl'
-                })*/
                 .when('/login', {
                     templateUrl: 'views/sec.html',
                     controller: 'SecCtrl'
@@ -55,7 +51,6 @@
         .run( function($rootScope, $location, $timeout, QZ, $firebaseSimpleLogin) {
 
             $rootScope.$watch('loginObj.user', function( newVal, oldVal ) {
-                // console.log("in the watch", newVal, oldVal, angular.equals(newVal, oldVal) );
                 if( angular.isObject(newVal) && ! $rootScope.currUser ) {
                     var ref = new Firebase(QZ.FB_USERS);
                     ref.startAt($rootScope.loginObj.user.email)
@@ -65,7 +60,6 @@
                                 email = snap.val()[user].email;
 
                             $rootScope.currUser = { user: user, email:email } ;
-                            // console.log("currUser in the running", $rootScope.currUser, snap.val(), snap );
                         })
                 }
 
@@ -88,8 +82,6 @@
                     }
                 }
             });
-
         })
-
 
 }(angular));

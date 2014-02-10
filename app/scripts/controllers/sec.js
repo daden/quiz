@@ -1,11 +1,7 @@
 (function (ng, mod) {
     'use strict';
 
-    // mod.factory('cpCriteriaFormCtrl', cpCriteriaFormCtrl);
-    // mod.directive('cpCriteriaForm', cpCriteriaForm);
-
     mod.controller('SecCtrl', SecCtrl);
-
 
     SecCtrl.$inject = ['$rootScope', '$scope', '$location', '$firebase', '$timeout', 'QZ', 'fbDataService', 'qzUiDataService', '$firebaseSimpleLogin'];
     function SecCtrl($rootScope, $scope, $location, $firebase, $timeout, QZ, fbDataService, qzUiDataService, $firebaseSimpleLogin) {
@@ -23,14 +19,6 @@
             }
         }
 
-        // get a reference to FB simple authentication
-        /*var dataRef = new Firebase(QZ.FB_ROOT);
-
-        // TODO: Putting this in $rootScope for convenience as we're using simple login. Should this be updated
-        // TODO:  would might want to put it into an injectable service. In either case, would use something more
-        // TODO:  than FB's simple authentication.
-        $rootScope.loginObj = $firebaseSimpleLogin(dataRef);*/
-
         $scope.sec = {};
         $scope.alerts = [];
 
@@ -40,7 +28,6 @@
         }
 
         $scope.doSec = function (type, email, password) {
-            console.log("in the doSec", type);
             // register
             if (type === 'register') {
                 $rootScope.loginObj.$createUser(email, password)
@@ -59,17 +46,8 @@
                             $location.path( "/quiz" );
                         });
 
-                        // using $firebase which seems to be a PITA!
-                        /*fbDataService.users.$add(newUser)
-                            .then(function(data) {
-                                // $rootScope.currUser = data.val();
-                                console.log("currUser", arguments );
-
-                            });*/
-
                     // Error
                     }, function(error) {
-                        // console.log("createUser error", error  );
                         $scope.alerts.push( { type: 'danger', msg: error.message } );
                         $timeout(function() {
                             $scope.alerts.splice(0,1);
@@ -85,8 +63,6 @@
                 }).then(
                     // succeeded
                     function (user) {
-                        // console.log('Logged in as: ', user.email, user);
-
                         // need to get the user and set it into the $rootScope
                         var ref = new Firebase(QZ.FB_USERS);
                         ref.startAt(user.email)
@@ -96,7 +72,6 @@
                                     email = snap.val()[user].email;
 
                                 $rootScope.currUser = { user: user, email:email } ;
-                                console.log("startat", $rootScope.currUser, snap.val(), snap );
                             })
 
                         $location.path( "/quiz" );
@@ -124,9 +99,6 @@
             $rootScope.loginObj.$logout()
             $location.path('/login');
         }
-
-        // console.log("$firebaseSimpleLogin", $firebaseSimpleLogin);
-
     }
 
 }(angular, angular.module('SecModule', [])));

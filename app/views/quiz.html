@@ -46,7 +46,7 @@
                 <div class="row" ng-show="! SHOW_ALL_QUESTIONS">
                     <div class="col-md-4 col-md-offset-8">
                         <div class="btn-group">
-                            <button class="btn btn-default" type="button" ng-click="previousQuestion()"
+                            <button class="btn btn-default" type="button" ng-click="previousQuestion($index)"
                                 data-ng-disabled="quizState.currQ == 0">Previous</button>
                             <button class="btn btn-default" type="button" ng-click="nextQuestion($index)"
                                 data-ng-disabled="quizState.currQ == quizState.quizLength">Next</button>

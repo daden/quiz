@@ -1,6 +1,17 @@
 (function (ng, mod) {
     'use strict';
 
+    /*********
+     * NOTE: This started as an idea of making a very simple admin interface for administering the quizzes,
+     *  questions, etc. but it really wasn't needed. It ended up as a convenient place for me to do some
+     *  stuff on the FB database that it turned out couldn't be done through their web UI. It is only somewhat
+     *  a controller as it does put some data into $scope to be displayed, but is really a spot for some
+     *  utility code. All the data in here should end up in services, etc. left as-is while working on the
+     *  rest of the app.
+     *
+     * At this point, mostly just used to update the survey with code in one shot.
+     */
+
     mod.controller('adminCtrl', adminCtrl);
 
     var code =
@@ -23,6 +34,7 @@
     adminCtrl.$inject = ['$scope','$firebase','QZ', 'fbDataService'];
     function adminCtrl($scope, $firebase, QZ, fbDataService) {
 
+            // turn on items in repop to run them when the /admin page is requested.
             var currRef, child,
                 repop = {
                     quizzes: false,
@@ -143,12 +155,7 @@
                     body: "",
                     val: "<dd><dt>",
                     name: "4a"
-                },
-                    /* {
-                    body: "<dd>",
-                    name: "4b"
-                }, */
-                    {
+                }, {
                     body: 'getElementById("outer").children[0]',
                     name: "5a"
                 }, {
@@ -226,11 +233,6 @@
                     $scope.idx = currRef.$getIndex();
                 })
             }
-
-
-
-            // console.log("currQuiz", $scope.quizzes );
-
 
     }
 

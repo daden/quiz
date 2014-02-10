@@ -5,7 +5,8 @@ angular.module('quizApp')
 
     })
 
-    // directive to blank out the screen while loading FB data. Temp solution to make sure we don't get errors
+    // TODO: Move into a directives folder
+    // directive to blank out the screen while loading FB data.
     .directive( "loadingScreen", ['$rootScope', '$compile', function($rootScope, $compile) {
 
         // stolen and adapted from: http://blog.tomaka17.com/2012/12/random-tricks-when-using-angularjs/

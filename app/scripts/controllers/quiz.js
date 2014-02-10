@@ -1,9 +1,6 @@
 (function (ng, mod) {
     'use strict';
 
-    // mod.factory('cpCriteriaFormCtrl', cpCriteriaFormCtrl);
-    // mod.directive('cpCriteriaForm', cpCriteriaForm);
-
     mod.controller('quizCtrl', quizCtrl );
     mod.directive('qzAnswer', qzAnswer );
     mod.directive('qzHeader', qzHeader );
@@ -23,8 +20,7 @@
 
     qzAnswer.$inject = ['$parse','$compile'];
     function qzAnswer($parse, $compile) {
-        // TODO: If these diverged a lot or get unweildy, could make them into their own directives and
-        //  simplify the templates in this directory. Might also help to cut down on duplication.
+        // If these diverged a lot or get unweildy, could make them into their own directives.
         var templates = {
             radio: '<div>\n    <label>\n        <input name="{{question.id}}" type="radio" ng-value="answer.id"\n            ng-model="takenQuiz[question.id]"> {{answer.body}} ({{answer.id}})\n    </label>\n</div>',
             checkbox: '<div>\n    <label>\n        <input name="{{question.id}}" type="checkbox" \n            ng-model="takenQuiz[question.id][answer.id]"> {{answer.body}} ({{answer.id}})\n    </label>\n</div>',
@@ -48,7 +44,6 @@
 
                 var tmpl = $compile(templates[scope.question.type])(scope);
                 element.append(tmpl);
-
             }
         }
     }
@@ -78,7 +73,7 @@
             // create an empty record for the quiz we're about to take.
             $scope.takenQuiz = qzUiDataService.createTakenQuiz( $rootScope.currUser, QZ.CURRENT_QUIZ );
 
-            // navigate when we show one question at a time
+            // navigationg when showing one question at a time
             $scope.nextQuestion = function( currIdx ) {
                 if ( currIdx > quizState.quizLength ) {
                     // noop
@@ -92,35 +87,8 @@
 
             $scope.saveQuiz = function( takenQuiz, questionsFull ) {
                 qzUiDataService.saveTakenQuiz( takenQuiz, questionsFull );
-
-                // Repopulate the form after a little delay to avoid double submissions.
-                /*$timeout( function() {
-                    $scope.takenQuiz = qzUiDataService.createTakenQuiz( 'daden', QZ.CURRENT_QUIZ );
-                },100)*/
-
                 $location.path("/quizResults");
             }
-
-            // ****** Temp methods
-            // $scope.quiz = fbDataService.quizzes['FirstQuiz'];
-
-            $scope.setQuizName = function() {
-                fbDataService.quizzes.$save(QZ.CURRENT_QUIZ)
-            }
-
-            $scope.getQuiz = function( quiz, inDepth ) {
-                $scope.result = qzUiDataService.getQuiz(quiz, inDepth);
-            }
-            $scope.getQuestions = function( quiz, inDepth ) {
-                $scope.result = qzUiDataService.getQuestions(quiz, inDepth);
-            }
-            $scope.getAnswers = function(question) {
-                $scope.result = qzUiDataService.getAnswers(question);
-            }
-            // ****** End Temp methods
-            // console.log("quiz", fbDataService );
-
-
     }
 
 }(angular, angular.module('quizModule',['DataServices'])));

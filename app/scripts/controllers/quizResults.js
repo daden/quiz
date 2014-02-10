@@ -1,9 +1,6 @@
 (function (ng, mod) {
     'use strict';
 
-    // mod.factory('cpCriteriaFormCtrl', cpCriteriaFormCtrl);
-    // mod.directive('cpCriteriaForm', cpCriteriaForm);
-
     mod.controller('quizResultsCtrl', quizResultsCtrl);
 
     quizResultsCtrl.$inject = ['$rootScope', '$scope','$firebase', '$timeout', 'QZ', 'fbDataService', 'qzUiDataService'];
@@ -37,7 +34,6 @@
 
             // should only be one answer for a text type
             if( ~['text'].indexOf( question.type ) ) {
-                console.log("currUserQuiz", currUserQuiz, question );
                 var key = _.keys( currUserQuiz.answers[question.id] )[0];
                 return currUserQuiz.answers[question.id][key];
             }
