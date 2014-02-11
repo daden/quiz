@@ -1,7 +1,7 @@
 (function (ng, mod) {
     'use strict';
 
-    mod.controller('testingGroundCtrl', testingGroundCtrl);
+    mod.controller('TestingGroundCtrl', TestingGroundCtrl);
 
     /* Because Karma/Jasmine is such a PITA about handling async requests making it sort of pointless
      *   to use as a real testing tool for developing FB-related code, the following is a down-and-dirty
@@ -13,8 +13,8 @@
     /* Actually, this should be generalized so a service can be configured with info on the tests to run and
     *   the comparisons to do -- could be made to look like Jasmine, but for now, just want to use it to move
     *   development forward. */
-    testingGroundCtrl.$inject = ['$scope', '$firebase', 'QZ', 'fbDataService'];
-    function testingGroundCtrl($scope, $firebase, QZ, fbDataService) {
+    TestingGroundCtrl.$inject = ['$scope', '$firebase', 'QZ', 'fbDataService'];
+    function TestingGroundCtrl($scope, $firebase, QZ, fbDataService) {
 
         var tests = {
 
@@ -28,14 +28,14 @@
             fbQuestions: {
                 service: 'questions',
                 data: {
-                    length: 3,
+                    length: 9,
                     propExists: "q1"
                 }
             },
             fbAnswers: {
                 service: 'answers',
                 data: {
-                    length: 5,
+                    length: 25,
                     propExists: "q1"
                 }
             }

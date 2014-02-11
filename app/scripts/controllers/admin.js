@@ -12,7 +12,7 @@
      * At this point, mostly just used to update the survey with code in one shot.
      */
 
-    mod.controller('adminCtrl', adminCtrl);
+    mod.controller('AdminCtrl', AdminCtrl);
 
     var code =
         'angular.module("myModule",[]).service("myService",(function() { \n' +
@@ -31,8 +31,8 @@
             '})()) \n';
 
 
-    adminCtrl.$inject = ['$scope','$firebase','QZ', 'fbDataService'];
-    function adminCtrl($scope, $firebase, QZ, fbDataService) {
+    AdminCtrl.$inject = ['$scope','$firebase','QZ', 'fbDataService'];
+    function AdminCtrl($scope, $firebase, QZ, fbDataService) {
 
             // turn on items in repop to run them when the /admin page is requested.
             var currRef, child,

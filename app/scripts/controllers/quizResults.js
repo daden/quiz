@@ -1,20 +1,12 @@
 (function (ng, mod) {
     'use strict';
 
-    mod.controller('quizResultsCtrl', quizResultsCtrl);
+    mod.controller('QuizResultsCtrl', QuizResultsCtrl);
 
-    quizResultsCtrl.$inject = ['$rootScope', '$scope','$firebase', '$timeout', 'QZ', 'fbDataService', 'qzUiDataService'];
-    function quizResultsCtrl($rootScope, $scope, $firebase, $timeout, QZ, fbDataService, qzUiDataService) {
+    QuizResultsCtrl.$inject = ['$scope', 'QZ', 'qzUiDataService', 'currUserQuiz'];
+    function QuizResultsCtrl($scope, QZ, qzUiDataService, currUserQuiz) {
 
-
-        var ref = new Firebase(QZ.FB_QUIZZES_TAKEN);
-        ref.startAt( $rootScope.currUser.email )
-            .endAt( $rootScope.currUser.email )
-            .on('value', function(snap) {
-                var key = _.keys( snap.val() )[0];
-                $scope.currUserQuiz = snap.val()[key];
-            })
-
+        $scope.currUserQuiz = currUserQuiz;
         $scope.quiz = qzUiDataService.getQuiz(QZ.CURRENT_QUIZ, true);
 
         $scope.showAnswer = function( question, answer ) {

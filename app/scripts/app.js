@@ -1,7 +1,7 @@
 (function ( ng ) {
     'use strict';
 
-    // if needed could move into a configurable service
+    // Could move into a configurable service
     var config = {
         FB_ROOT: "https://surveyamoeba.firebaseio.com/"
     }
@@ -12,11 +12,11 @@
         FB_QUESTIONS: config.FB_ROOT + 'questions',
         FB_ANSWERS: config.FB_ROOT + 'answers',
         FB_QUIZZES_TAKEN: config.FB_ROOT + 'quizzestaken',
-        CURRENT_QUIZ: 'RealQuiz',
-        SHOW_ALL_QUESTIONS: false           // option to show all questions at once (may not be fully handled in the UI)
+        CURRENT_QUIZ: 'RealQuiz',     // which quiz to show -- only other one is "FirstQuiz"
+        SHOW_ALL_QUESTIONS: false     // option to show all questions at once (should work in UI but not always tested)
     })
 
-    // Basic module
+    // App module
     ng.module('quizApp', ['ngCookies','ngResource','ngSanitize','ngRoute','firebase',
             'SecModule','quizModule','adminModule','DataServices','testingGroundModule'])
 
@@ -28,17 +28,52 @@
                 })
                 .when('/quiz', {
                     templateUrl: 'views/quiz.html',
-                    controller: 'quizCtrl'
+                    controller: 'QuizCtrl'
                 })
                 .when('/quizResults', {
                     templateUrl: 'views/quizResults.html',
-                    controller: 'quizResultsCtrl'
+                    controller: 'QuizResultsCtrl',
+                    resolve: {
+                        // NOTE: Move this into the resolve as it's better form but an
+                        //  intermittent error on $$hashKey not being available showed
+                        //  up after putting it here. Might be an FB thing. If the issues
+                        //  with FB resolve, then uncomment this and remove the call
+                        //  in the controller.
+                        /*quiz: ['$q','$timeout','QZ','qzUiDataService', function($q,$timeout,QZ, qzUiDataService) {
+                            var deferred = $q.defer();
+
+                            var quiz = qzUiDataService.getQuiz(QZ.CURRENT_QUIZ, true);
+                            // giving FB a little time as it seemed to get a little
+                            //  knicker twisting going on
+                            $timeout( function() {
+                                deferred.resolve(quiz);
+                            },100);
+
+                            return deferred.promise;
+                        }],*/
+                        currUserQuiz: ['$rootScope', '$q', 'QZ', function( $rootScope, $q, QZ ) {
+                            var deferred = $q.defer();
+
+                            var ref = new Firebase(QZ.FB_QUIZZES_TAKEN);
+                            ref.startAt( $rootScope.currUser.email )
+                                .endAt( $rootScope.currUser.email )
+                                .on('value', function(snap) {
+                                    var key = _.keys( snap.val() )[0];
+                                    deferred.resolve( snap.val()[key] );
+                                    // $scope.currUserQuiz = snap.val()[key];
+                                })
+
+                            return deferred.promise;
+                        }]
+                    }
                 })
+                // just used for down-and-dirty populating of the FB DB
                 .when('/admin', {
                     templateUrl: 'views/admin.html',
-                    controller: 'adminCtrl'
+                    controller: 'AdminCtrl'
                 })
-                .when('/testingGround', {
+                // started to play with how we might test FB services more meaningfully
+                .when('/TestingGround', {
                     templateUrl: 'views/testingGround.html',
                     controller: 'testingGroundCtrl'
                 })
