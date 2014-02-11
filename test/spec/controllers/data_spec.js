@@ -1,5 +1,10 @@
 'use strict';
 
+// NOTE: Okay I spent several hours trying to get FB to work in unit tests
+//  taking various approaches including an AsyncSpec thing to no avail.
+//  Left the code here in case I find I missed something -- wanted to be
+//  able to come back to it. 
+
 xdescribe('Service: DataServices', function () {
 
     // load the controller's module
