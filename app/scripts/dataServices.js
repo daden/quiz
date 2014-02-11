@@ -146,7 +146,7 @@
                 var question = questionsFull[k];
 
                 // they didn't answer, it's wrong
-                if( ! ng.isDefined(takenQuiz.answers[question.id]) ) {
+                if( ! ng.isDefined(takenQuiz.answers) || ! ng.isDefined(takenQuiz.answers[question.id]) ) {
                     grade(takenQuiz, false, question.id);
                     continue;
                 }
@@ -191,7 +191,8 @@
 
                         // For now, just check if the text response contains the string that is the correct answer.
                         //  Obviously, way simpler than would be needed
-                        if( ! ~takenQuiz.answers[question.id][answerId].search(textAnswer) ) {
+                        // takenQuiz.answers[question.id]
+                        if( ! takenQuiz.answers[question.id] || ! takenQuiz.answers[question.id][answerId] || ! ~takenQuiz.answers[question.id][answerId].search(textAnswer) ) {
                             grade(takenQuiz,false, question.id);
                         } else {
                             grade(takenQuiz,true, question.id);

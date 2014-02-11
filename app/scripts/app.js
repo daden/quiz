@@ -28,12 +28,35 @@
                 })
                 .when('/quiz', {
                     templateUrl: 'views/quiz.html',
-                    controller: 'QuizCtrl'
+                    controller: 'QuizCtrl',
+                    resolve: {
+                        takenQuiz: ['$rootScope','$q','QZ','qzUiDataService', function($rootScope,$q,QZ,qzUiDataService) {
+                            var deferred = $q.defer();
+                            deferred.resolve( qzUiDataService.createTakenQuiz( $rootScope.currUser, QZ.CURRENT_QUIZ ) );
+                            return deferred.promise;
+                        }],
+                        quiz: ['$rootScope','$q', '$timeout','QZ','qzUiDataService', function($rootScope,$q,$timeout,QZ,qzUiDataService) {
+                            var deferred = $q.defer();
+                            // Sorta hinky thing to make sure FB angularFire isn't still putzing around.
+                            var checkIt = function() {
+                                var ret = $timeout( function() {
+                                    if( ! $rootScope.loading ) {
+                                        deferred.resolve( qzUiDataService.getQuiz(QZ.CURRENT_QUIZ, true) );
+                                    } else {
+                                        checkIt()
+                                    }
+                                },100)
+                                return ret;
+                            };
+                            checkIt();
+                            return deferred.promise;
+                        }]
+                    }
                 })
                 .when('/quizResults', {
                     templateUrl: 'views/quizResults.html',
-                    controller: 'QuizResultsCtrl',
-                    resolve: {
+                    controller: 'QuizResultsCtrl'
+                    // resolve: {
                         // NOTE: Move this into the resolve as it's better form but an
                         //  intermittent error on $$hashKey not being available showed
                         //  up after putting it here. Might be an FB thing. If the issues
@@ -51,7 +74,12 @@
 
                             return deferred.promise;
                         }],*/
-                        currUserQuiz: ['$rootScope', '$q', 'QZ', function( $rootScope, $q, QZ ) {
+                        // NOTE: Likewise put this here but due to it needing $rootScope.currUser to be populated
+                        //  and could only get FB to do in the watch below in the run section, this fails under
+                        //  when refreshing the app from the results page. If the FB issues are sorted out or replaced,
+                        //  get the current user's quiz here rather than in the controller.
+
+                        /*currUserQuiz: ['$rootScope', '$q', 'QZ', function( $rootScope, $q, QZ ) {
                             var deferred = $q.defer();
 
                             var ref = new Firebase(QZ.FB_QUIZZES_TAKEN);
@@ -64,8 +92,8 @@
                                 })
 
                             return deferred.promise;
-                        }]
-                    }
+                        }]*/
+                        // }
                 })
                 // just used for down-and-dirty populating of the FB DB
                 .when('/admin', {
