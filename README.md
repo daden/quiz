@@ -19,6 +19,8 @@ To access the app:
 
 A few things to know about the app:
 
+1.  If you want to see the questions all on one page, there is a setting in the app.js file to change it over.
+
 1. The application is backended into Firebase. Some interesting things were learned along the way, including the
     fact that AngularFire, while appealing at first look, is a PITA if you need to do anything outside the box
     and trying to set up tests around it was painful. Regular unit tests don't appear to be an option
@@ -35,3 +37,20 @@ A few things to know about the app:
     There is nothing pretty or good about the code in there. It started with an idea of creating a simple admin
     interface for managing the application data but ended up as a scratch pad to populate the DB and test some
     interactions with FB.
+
+5.  The DB was designed to accommodate multiple quizzes and multiple quiz attempts, but limited this version to
+    only store one quiz per user.
+
+## Known Issues
+
+1.  If you refresh the browser on any page other than the login page you are returned to the login page whether
+    you are logged in or not.
+
+2.  The IDs for the questions and number are displaying to the user. Probably should be removed (easy enough) but left
+    them in place for now.
+
+3.  There's no validation on the survey form fields or requirements for the password field.
+
+4.  There's no way to re-edit an existing quiz though you can see the results of your last attempt and saving another
+    one updates the record.
+    
